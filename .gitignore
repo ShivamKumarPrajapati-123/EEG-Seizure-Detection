@@ -1,0 +1,14 @@
+# Jupyter
+.ipynb_checkpoints/
+**/.ipynb_checkpoints/
+
+# Python
+__pycache__/
+*.pyc
+
+# Models
+*.joblib
+
+# Operating System
+.DS_Store
+Thumb.db
