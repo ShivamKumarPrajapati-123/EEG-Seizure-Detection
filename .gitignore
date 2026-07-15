@@ -12,3 +12,9 @@ __pycache__/
 # Operating System
 .DS_Store
 Thumb.db
+
+# Large dataset (keep locally, don't upload)
+data/chb01/
+
+# Generated windows
+data/windows.npy
