@@ -408,6 +408,29 @@ results/threshold_analysis.png
 
 The threshold analysis is exploratory because the test set contains only two seizure samples. Therefore, these results should not be considered statistically reliable threshold optimization.
 
+## 12.5 Results and Visualizations
+
+The following visualizations summarize the performance of the baseline Random Forest model and the effect of classification threshold adjustment.
+
+### Baseline Confusion Matrix
+
+The baseline model uses the default classification threshold of 0.50. The model correctly classifies normal EEG windows but fails to detect the seizure samples in the test set.
+
+![Random Forest Baseline Confusion Matrix](images/random_forest_baseline_confusion_matrix.png)
+
+### Random Forest Confusion Matrix
+
+This confusion matrix provides a visual representation of the model's classification performance on the test dataset.
+
+![Random Forest Confusion Matrix](images/random_forest_confusion_matrix.png)
+
+### Threshold-Adjusted Confusion Matrix
+
+Lowering the classification threshold to 0.05 increases seizure detection sensitivity but also produces additional false-positive predictions. This visualization demonstrates the trade-off between sensitivity and specificity.
+
+![Random Forest Threshold Confusion Matrix](images/random_forest_threshold_confusion_matrix.png)
+
+
 ---
 
 ## 13. Key Findings
