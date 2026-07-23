@@ -1,127 +1,78 @@
-
 # EEG-Based Epileptic Seizure Detection Using Signal Processing and Machine Learning
 
-## Project Overview
+## Author
 
-Epileptic seizure are neurological events caused by abnormal electrical activity in the brain . Early and accurate seizure detection is important for diagnosis, patient monitoring, and timely medical intervention.
+**Shivam Prajapati**  
+Computer Science Engineering — Artificial Intelligence & Machine Learning
 
-This project presents an end-to-end machine learning pipeline for epilepti seizure detection using electroencephalogram (EEG) signals from the CHB-MIT Scalp EEG Database. The raw EEG recordings are preprocessed, divided into fixed-length windows, labeled according to seizure intervals, and transformed into statistical and frequency-domin features. These features are then used to train and evaluate a Random Forest classifier for seizure detection.
+---
 
-The project demonstrates the complete workflow of biomedical signal processing, feature engineering, machine learning model development, and performance evaluation using python.
+## 1. Project Overview
 
-----
+Epileptic seizures are neurological events that can produce abnormal patterns in Electroencephalography (EEG) signals. Automatic seizure detection from EEG recordings is an important application of biomedical signal processing and machine learning.
 
-## Key Features
+This project presents an end-to-end machine learning pipeline for detecting epileptic seizure activity from EEG signals using the **CHB-MIT Scalp EEG Database**.
 
--Read raw EEG (.edf) recordings using MNE-Python
+The system processes raw EEG recordings, performs signal preprocessing, segments continuous EEG signals into fixed-length windows, assigns seizure and non-seizure labels, extracts statistical and frequency-domain features, and applies a Random Forest classifier for binary classification.
 
--Apply EEG signal preprocessing
+The project also evaluates the effect of severe class imbalance and investigates classification threshold adjustment to understand the trade-off between seizure sensitivity and false-positive predictions.
 
--Generate fixed-length EEG windows
+The complete pipeline includes:
 
--Label seizure and non-seizure windows
+- EEG data loading from EDF files
+- EEG signal preprocessing
+- Fixed-length EEG windowing
+- Seizure and non-seizure labeling
+- Statistical feature extraction
+- Frequency-domain feature extraction
+- Machine learning dataset construction
+- Random Forest model training
+- Model evaluation
+- Classification threshold analysis
+- EEG window-level prediction
+- Automated evaluation result generation
+- Result visualization and reporting
 
--Extract statistical and spectral features
+This project was developed as a research and learning prototype to gain practical experience in:
 
--Train a Random Forest classifier
+- Biomedical signal processing
+- EEG data analysis
+- Feature engineering
+- Machine learning
+- Imbalanced classification
+- Model evaluation
+- Reproducible machine learning workflows
 
--Evaluate model performance using standard machine learning metrics
+---
 
--Save the trained model for future inference
+## 2. Objectives
 
-----
+The main objectives of this project are:
 
-## Problem Statement
+1. Load EEG recordings from EDF files.
+2. Understand EEG signal properties and metadata.
+3. Preprocess EEG signals using frequency filtering.
+4. Segment continuous EEG recordings into fixed-length windows.
+5. Identify seizure and non-seizure EEG windows.
+6. Extract statistical features from EEG signals.
+7. Extract frequency-domain features using Power Spectral Density (PSD).
+8. Construct a machine learning feature dataset.
+9. Train a Random Forest classifier.
+10. Evaluate model performance using appropriate classification metrics.
+11. Analyze the effect of severe class imbalance.
+12. Investigate classification threshold adjustment.
+13. Perform prediction on individual EEG windows.
+14. Generate reproducible evaluation results and visualizations.
 
-Epilepsy is one of the most common neurological disorders worldwide. Neurologists diagnose epileptic seizures by analyzing Electroencephalogram (EEG) recordings, which is often a time-consuming and expertise-dependent process.
+---
 
-The objective of this project is to develop an automated machine learning system capable of distinguishing seizure and non-seizure EEG segments using statistical and frequency-domin features extracted from EEG recordings.
+## 3. Dataset
 
-The project aims to demonstrate how signal processing and machine learning techniques can support computer-aided diagnosis in healthcare.
+This project uses the **CHB-MIT Scalp EEG Database**, a publicly available EEG dataset containing EEG recordings from pediatric subjects with intractable seizures.
 
-## Objectives
+The EEG recordings are provided in **EDF (European Data Format)** files and are processed using the **MNE-Python** library.
 
-The primary objectives of this project are:
+The current project focuses on EEG recordings from the CHB-MIT dataset, including analysis of:
 
--Read raw EEG recordings from the CHB-MIT Scalp EEG Database.
-
--Apply preprocessing techniques to reduce signal noise.
-
--Divide EEG recordings into fixed-length windows.
-
--Label EEG windows as seizure or non-seizure.
-
-Extract statistical and spectral features.
-
-Build a machine learning dataset.
-
-Train a Random Forest classifier.
-
-Evaluate the model using stadard classification metrics.
-
-Save the trained model for future predictions.
-
-
-## Dataset
-
-This project uses the **CHB-MIT Scalp EEG Database**, a publicly available dataset provided by the Massachusetts Institute of Technology (MIT) and Boston Children's Hospital.
-
-### Dataset Information
-
-- Dataset: CHB-MIT Scalp EEG Database
-- Patient Used: chb01
-- Recording Format: EDF (European Data Format)
-- Sampling Frequency: 256 Hz
-- Number of EEG Channels: 23
-- Window Length: 4 seconds
-
-### Files Used
-
-- chb01_01.edf
-- chb01_03.edf
-- chb01_04.edf
-- chb01_09.edf
-- chb01_15.edf
-- chb01_18.edf
-- chb01_21.edf
-- chb01_26.edf
-- chb01_30.edf
-- chb01_38.edf
-- chb01_39.edf
-- chb01_40.edf
-- chb01_41.edf
-- chb01_42.edf
-- chb01_46.edf
-
-### Dataset Summary
-
-- Total Windows: 900
-- Normal Windows: 889
-- Seizure Windows: 11
-
-## Technologies Used
-
-### Programming Language
-
-- Python 3
-
-### Libraries
-
-- NumPy
-- Pandas
-- Matplotlib
-- SciPy
-- Scikit-learn
-- MNE-Python
-- Joblib
-
-### Machine Learning Algorithm
-
-- Random Forest Classifier
-
-### Development Environment
-
-- Jupyter Notebook
-- Visual Studio Code
-- 
-- 
+```text
+chb01_03.edf

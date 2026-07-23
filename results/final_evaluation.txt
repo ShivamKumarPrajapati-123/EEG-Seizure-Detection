@@ -1,0 +1,27 @@
+EEG SEIZURE DETECTION - FINAL EVALUATION
+============================================================
+
+Features Shape: (900, 8)
+Labels Shape: (900,)
+
+Confusion Matrix:
+[[178   0]
+ [  2   0]]
+
+Classification Report:
+              precision    recall  f1-score   support
+
+      Normal       0.99      1.00      0.99       178
+     Seizure       0.00      0.00      0.00         2
+
+    accuracy                           0.99       180
+   macro avg       0.49      0.50      0.50       180
+weighted avg       0.98      0.99      0.98       180
+
+Final Metrics:
+Accuracy: 0.9889
+Precision: 0.0000
+Sensitivity: 0.0000
+Specificity: 1.0000
+F1-Score: 0.0000
+Balanced Accuracy: 0.5000
