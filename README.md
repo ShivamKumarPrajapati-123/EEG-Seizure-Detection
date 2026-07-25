@@ -312,45 +312,10 @@ Because the dataset is severely imbalanced, accuracy alone is not considered suf
 
 ## 11. Baseline Model Results
 
-The Random Forest model is first evaluated using the default classification threshold:
+The Random Forest model was initially evaluated using the default classification threshold:
 
 ```text
 Threshold = 0.50
-```
-
-The resulting confusion matrix is:
-
-|                    | Predicted Normal | Predicted Seizure |
-| ------------------ | ---------------: | ----------------: |
-| **Actual Normal**  |              178 |                 0 |
-| **Actual Seizure** |                2 |                 0 |
-
-The final baseline metrics are:
-
-| Metric            |  Result |
-| ----------------- | ------: |
-| Accuracy          |  98.89% |
-| Precision         |   0.00% |
-| Sensitivity       |   0.00% |
-| Specificity       | 100.00% |
-| F1-Score          |   0.00% |
-| Balanced Accuracy |  50.00% |
-
-The model predicted all 180 test samples as the majority **Normal** class.
-
-Although the overall accuracy is high, the model failed to detect any seizure samples.
-
-This demonstrates an important limitation of accuracy in highly imbalanced medical classification problems.
-
-The baseline model therefore cannot be considered effective for seizure detection despite its high overall accuracy.
-
-The baseline confusion matrix is available in:
-
-```text
-results/confusion_matrix.png
-```
-
----
 
 ## 12. Classification Threshold Analysis
 
@@ -410,29 +375,40 @@ The threshold analysis is exploratory because the test set contains only two sei
 
 ## 12.5 Results and Visualizations
 
-The following visualizations summarize the performance of the baseline Random Forest model and the effect of classification threshold adjustment.
+The following visualizations summarize the performance of the Random Forest model, including the baseline evaluation and the final threshold-optimized results.
 
 ### Baseline Confusion Matrix
 
-The baseline model uses the default classification threshold of 0.50. The model correctly classifies normal EEG windows but fails to detect the seizure samples in the test set.
+The baseline model uses the default classification threshold of 0.50. In the initial baseline evaluation, the model failed to detect seizure samples despite achieving high overall accuracy, demonstrating the impact of class imbalance on seizure detection performance.
 
 ![Random Forest Baseline Confusion Matrix](images/random_forest_baseline_confusion_matrix.png)
 
-### Random Forest Confusion Matrix
+### Threshold Optimization
 
-This confusion matrix provides a visual representation of the model's classification performance on the test dataset.
+The classification threshold was evaluated at multiple operating points to study the trade-off between seizure detection sensitivity and false-positive rate.
 
-![Random Forest Confusion Matrix](images/random_forest_confusion_matrix.png)
+The final operating threshold was selected as:
 
-### Threshold-Adjusted Confusion Matrix
+```text
+Threshold = 0.40
+## 12.5 Results and Visualizations
 
-Lowering the classification threshold to 0.05 increases seizure detection sensitivity but also produces additional false-positive predictions. This visualization demonstrates the trade-off between sensitivity and specificity.
+The following visualizations summarize the performance of the Random Forest model, including the baseline evaluation and the final threshold-optimized results.
 
-![Random Forest Threshold Confusion Matrix](images/random_forest_threshold_confusion_matrix.png)
+### Baseline Confusion Matrix
 
+The baseline model uses the default classification threshold of 0.50. In the initial baseline evaluation, the model failed to detect seizure samples despite achieving high overall accuracy, demonstrating the impact of class imbalance on seizure detection performance.
 
----
+![Random Forest Baseline Confusion Matrix](images/random_forest_baseline_confusion_matrix.png)
 
+### Threshold Optimization
+
+The classification threshold was evaluated at multiple operating points to study the trade-off between seizure detection sensitivity and false-positive rate.
+
+The final operating threshold was selected as:
+
+```text
+Threshold = 0.40
 ## 13. Key Findings
 
 The main findings of the current experiment are:
