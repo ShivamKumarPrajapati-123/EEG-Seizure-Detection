@@ -767,3 +767,13 @@ Computer Science Engineering — Artificial Intelligence & Machine Learning
 
 **GitHub:**
 https://github.com/ShivamKumarPrajapati-123
+---
+
+## 13. Event-Level Validation
+
+An event-level validation was performed using the `chb01_03.edf` EEG recording from the CHB-MIT dataset.
+
+The ground-truth seizure annotation for this recording indicates that the seizure occurred from:
+
+```text
+2996 seconds to 3036 seconds
