@@ -1,45 +1,46 @@
-# EEG-Based Epileptic Seizure Detection Using Signal Processing and Machine Learning
+# 🧠 EEG-Based Epileptic Seizure Detection Using Signal Processing and Machine Learning
 
-**Author:** Shivam Prajapati
-**Computer Science Engineering — Artificial Intelligence & Machine Learning**
+**Author:** Shivam Prajapati  
+**Program:** Computer Science Engineering — Artificial Intelligence & Machine Learning
 
 ---
 
 ## 1. Project Overview
 
-Epileptic seizures are neurological events that can produce abnormal patterns in Electroencephalography (EEG) signals. Automatic seizure detection from EEG recordings is an important application of biomedical signal processing and machine learning.
+Epileptic seizures are neurological events that can produce abnormal patterns in electroencephalography (EEG) signals. Automatic seizure detection from EEG recordings is an important application of biomedical signal processing and machine learning.
 
-This project presents an end-to-end machine learning pipeline for detecting epileptic seizure activity from EEG signals using the **CHB-MIT Scalp EEG Database**.
+This project presents an end-to-end research and learning pipeline for analyzing EEG recordings and detecting seizure-like activity using signal processing, feature engineering, and machine learning.
 
-The system processes raw EEG recordings, performs signal preprocessing, segments continuous EEG signals into fixed-length windows, assigns seizure and non-seizure labels, extracts statistical and frequency-domain features, and applies a Random Forest classifier for binary classification.
+The project uses the **CHB-MIT Scalp EEG Database** and processes EEG recordings stored in EDF (European Data Format) files.
 
-The project also evaluates the effect of severe class imbalance and investigates classification threshold adjustment to understand the trade-off between seizure sensitivity and false-positive predictions.
+The overall pipeline includes:
 
-### Complete Pipeline
+- EEG data loading from EDF files
+- EEG signal preprocessing
+- Fixed-length EEG windowing
+- Seizure and non-seizure labeling
+- Statistical feature extraction
+- Frequency-domain feature extraction using Power Spectral Density (PSD)
+- Random Forest model training
+- Model evaluation
+- Classification threshold analysis
+- Window-level prediction
+- Event-level seizure-like activity detection
+- Streamlit-based interactive deployment
+- Result visualization and downloadable outputs
 
-* EEG data loading from EDF files
-* EEG signal preprocessing
-* Fixed-length EEG windowing
-* Seizure and non-seizure labeling
-* Statistical feature extraction
-* Frequency-domain feature extraction
-* Machine learning dataset construction
-* Random Forest model training
-* Model evaluation
-* Classification threshold analysis
-* EEG window-level prediction
-* Automated evaluation result generation
-* Result visualization and reporting
+The project was developed as a **research and learning prototype** to gain practical experience in:
 
-This project was developed as a research and learning prototype to gain practical experience in:
+- Biomedical signal processing
+- EEG data analysis
+- Feature engineering
+- Machine learning
+- Imbalanced classification
+- Model evaluation
+- Reproducible workflows
+- Machine learning application deployment
 
-* Biomedical signal processing
-* EEG data analysis
-* Feature engineering
-* Machine learning
-* Imbalanced classification
-* Model evaluation
-* Reproducible machine learning workflows
+> **Important:** This project is intended for educational and research purposes. It is **not a clinically validated medical diagnostic system** and must not be used for medical diagnosis or clinical decision-making.
 
 ---
 
@@ -47,20 +48,21 @@ This project was developed as a research and learning prototype to gain practica
 
 The main objectives of this project are:
 
-* Load EEG recordings from EDF files.
-* Understand EEG signal properties and metadata.
-* Preprocess EEG signals using frequency filtering.
-* Segment continuous EEG recordings into fixed-length windows.
-* Identify seizure and non-seizure EEG windows.
-* Extract statistical features from EEG signals.
-* Extract frequency-domain features using Power Spectral Density (PSD).
-* Construct a machine learning feature dataset.
-* Train a Random Forest classifier.
-* Evaluate model performance using appropriate classification metrics.
-* Analyze the effect of severe class imbalance.
-* Investigate classification threshold adjustment.
-* Perform prediction on individual EEG windows.
-* Generate reproducible evaluation results and visualizations.
+- Load EEG recordings from EDF files.
+- Understand EEG signal properties and metadata.
+- Preprocess EEG signals using frequency filtering.
+- Segment continuous EEG recordings into fixed-length windows.
+- Identify seizure and non-seizure EEG windows.
+- Extract statistical features from EEG signals.
+- Extract frequency-domain features using Power Spectral Density (PSD).
+- Construct a machine learning feature dataset.
+- Train a Random Forest classifier.
+- Evaluate model performance using appropriate classification metrics.
+- Analyze the effect of severe class imbalance.
+- Investigate classification threshold adjustment.
+- Perform prediction on individual EEG windows.
+- Generate reproducible evaluation results and visualizations.
+- Deploy the prediction pipeline as an interactive Streamlit application.
 
 ---
 
@@ -70,28 +72,28 @@ This project uses the **CHB-MIT Scalp EEG Database**, a publicly available EEG d
 
 The EEG recordings are provided in **EDF (European Data Format)** files and are processed using the **MNE-Python** library.
 
-The current project focuses on EEG recordings from the CHB-MIT dataset, including analysis of:
+The project includes analysis of recordings from the CHB-MIT dataset, including:
 
 ```text
 chb01_03.edf
 ```
 
-The raw EDF recordings are not included in this repository because of their large file size. They should be downloaded separately from the CHB-MIT Scalp EEG Database and placed locally inside the appropriate data directory.
+The raw EDF recordings are not included in the GitHub repository because of their large file size. They should be obtained separately from the CHB-MIT Scalp EEG Database and supplied to the application or local processing pipeline.
 
 ---
 
-## 4. Project Workflow
+## 4. Complete System Workflow
 
-The complete EEG processing and machine learning workflow is:
+The overall pipeline is:
 
 ```text
-Raw EEG EDF Files
+Raw EEG EDF Recording
         │
         ▼
 EEG Data Loading using MNE
         │
         ▼
-EEG Signal Understanding
+EEG Metadata and Signal Inspection
         │
         ▼
 Signal Preprocessing
@@ -105,45 +107,51 @@ Seizure / Non-Seizure Labeling
         ▼
 Feature Extraction
         │
-        ├─────────────────────────┐
-        ▼                         ▼
-Statistical Features      Frequency-Domain Features
-        │                         │
-        └────────────┬────────────┘
-                     ▼
-          Machine Learning Dataset
-                     │
-                     ▼
-          Random Forest Classifier
-                     │
-                     ▼
-              Model Evaluation
-                     │
-                     ▼
-          Classification Threshold
-                 Analysis
-                     │
-                     ▼
-            EEG Window Prediction
-                     │
-                     ▼
-          Results and Visualization
+        ├──────────────────────────────┐
+        ▼                              ▼
+Statistical Features         Frequency-Domain Features
+        │                              │
+        └──────────────┬───────────────┘
+                       ▼
+             Machine Learning Dataset
+                       │
+                       ▼
+             Random Forest Classifier
+                       │
+                       ▼
+                 Model Evaluation
+                       │
+                       ▼
+            Classification Threshold
+                  Analysis
+                       │
+                       ▼
+             Window-Level Prediction
+                       │
+                       ▼
+          Event-Level Detection Timeline
+                       │
+                       ▼
+              Streamlit Deployment
+                       │
+                       ▼
+              Downloadable Results
 ```
 
 ---
 
 ## 5. EEG Signal Preprocessing
 
-The raw EEG signals are loaded from EDF files using the **MNE-Python** library.
+The raw EEG signals are loaded from EDF files using **MNE-Python**.
 
 A band-pass filter is applied to retain relevant EEG frequency components and reduce unwanted low-frequency drift and high-frequency noise.
 
 The filtering range used in the current pipeline is:
 
-| Parameter             | Value  |
-| --------------------- | ------ |
-| Low Cutoff Frequency  | 0.5 Hz |
-| High Cutoff Frequency | 40 Hz  |
+| Parameter | Value |
+|---|---:|
+| Low Cutoff Frequency | 0.5 Hz |
+| High Cutoff Frequency | 40 Hz |
 
 The preprocessing step prepares the EEG signals for subsequent windowing and feature extraction.
 
@@ -151,15 +159,15 @@ The preprocessing step prepares the EEG signals for subsequent windowing and fea
 
 ## 6. EEG Windowing
 
-The continuous EEG recordings are divided into fixed-length windows.
+The continuous EEG recording is divided into fixed-length windows.
 
-The current pipeline uses:
+The current prediction pipeline uses:
 
-| Parameter          | Value     |
-| ------------------ | --------- |
-| Sampling Frequency | 256 Hz    |
-| Window Duration    | 4 seconds |
-| Samples per Window | 1024      |
+| Parameter | Value |
+|---|---:|
+| Sampling Frequency | 256 Hz |
+| Window Duration | 4 seconds |
+| Samples per Window | 1024 |
 
 Each EEG window contains:
 
@@ -167,34 +175,38 @@ Each EEG window contains:
 23 EEG Channels × 1024 Samples
 ```
 
-The fixed-length EEG windows are treated as individual samples for feature extraction and machine learning.
+For a 3600-second recording at 256 Hz, the deployed application created:
 
-This approach converts the continuous EEG recording into smaller segments that can be independently analyzed and classified.
+```text
+900 complete 4-second EEG windows
+```
+
+The fixed-length windows are treated as individual samples for feature extraction and prediction.
 
 ---
 
 ## 7. Seizure Labeling
 
-Each EEG window is assigned a binary classification label:
+During the dataset construction experiments, each EEG window was assigned a binary label:
 
 ```text
 0 → Normal / Non-Seizure
 1 → Seizure
 ```
 
-Seizure annotations associated with the EEG recordings are used to identify windows that overlap with seizure activity.
+Seizure annotations associated with the EEG recordings were used to identify windows overlapping with seizure activity.
 
-For the current dataset construction experiment:
+The experimental dataset used for model evaluation contained approximately:
 
-| Category        | Count |
-| --------------- | ----: |
-| Total Windows   |   900 |
-| Normal Windows  |   890 |
-| Seizure Windows |    10 |
+```text
+Total Windows   = 900
+Normal Windows  = 890
+Seizure Windows = 10
+```
 
-The resulting dataset contains a severe class imbalance between normal and seizure samples.
+This produced a severe class imbalance between normal and seizure samples.
 
-This class imbalance is an important factor when evaluating the performance of the machine learning model.
+> **Note:** The counts above describe the experimental labeled dataset used for model evaluation. They should not be confused with the deployed application's prediction output, where the recording is classified into **Normal** and **Seizure-like** windows using a probability threshold.
 
 ---
 
@@ -202,17 +214,17 @@ This class imbalance is an important factor when evaluating the performance of t
 
 Features are extracted from each EEG window using statistical and frequency-domain analysis.
 
-The current feature dataset contains eight features for each EEG window.
+The current feature dataset contains eight features.
 
 ### 8.1 Statistical Features
 
-The following statistical features are extracted from the EEG signals:
+The following statistical features are extracted:
 
-* Mean
-* Standard Deviation
-* Variance
+- Mean
+- Standard Deviation
+- Variance
 
-These features are calculated from the EEG channels and aggregated to produce window-level statistical representations.
+These features provide statistical representations of the EEG signal.
 
 ### 8.2 Frequency-Domain Features
 
@@ -221,14 +233,14 @@ Power Spectral Density (PSD) is calculated using the **Welch method**.
 The following EEG frequency bands are analyzed:
 
 | Frequency Band | Frequency Range |
-| -------------- | --------------- |
-| Delta          | 0.5–4 Hz        |
-| Theta          | 4–8 Hz          |
-| Alpha          | 8–13 Hz         |
-| Beta           | 13–30 Hz        |
-| Gamma          | 30–40 Hz        |
+|---|---:|
+| Delta | 0.5–4 Hz |
+| Theta | 4–8 Hz |
+| Alpha | 8–13 Hz |
+| Beta | 13–30 Hz |
+| Gamma | 30–40 Hz |
 
-The final feature vector for each EEG window contains:
+The final feature vector contains:
 
 ```text
 Mean
@@ -241,14 +253,12 @@ Beta
 Gamma
 ```
 
-The resulting dataset has the following dimensions:
+The experimental feature dataset was represented as:
 
 ```text
 Features Shape = (900, 8)
 Labels Shape   = (900,)
 ```
-
-The processed feature data is stored in the `data/` directory.
 
 ---
 
@@ -258,53 +268,51 @@ A **Random Forest Classifier** is used as the baseline machine learning model.
 
 Random Forest was selected because it:
 
-* Works effectively with tabular feature data.
-* Can model nonlinear relationships.
-* Does not require extensive feature scaling.
-* Provides feature importance information.
-* Is relatively straightforward to train and interpret.
+- Works effectively with tabular feature data.
+- Can model nonlinear relationships.
+- Does not require extensive feature scaling.
+- Provides feature importance information.
+- Is relatively straightforward to train and interpret.
 
-The trained Random Forest model is saved as:
+The trained model is stored as:
 
 ```text
 models/random_forest_model.pkl
 ```
 
-The model is later loaded for evaluation and individual EEG window prediction.
+The model can then be loaded by the prediction pipeline for EEG window-level classification.
 
-The current Random Forest implementation is considered a **baseline research model** and is not a clinically validated seizure detection system.
+The Random Forest implementation is considered a **baseline research model** and is not a clinically validated seizure detection model.
 
 ---
 
 ## 10. Model Evaluation
 
-The dataset is divided into training and testing subsets using an 80/20 split.
+The experimental dataset was divided into training and testing subsets using an 80/20 split.
 
-The resulting dataset contains:
+| Dataset | Samples |
+|---|---:|
+| Total Samples | 900 |
+| Training Samples | 720 |
+| Testing Samples | 180 |
 
-| Dataset          | Samples |
-| ---------------- | ------: |
-| Total Samples    |     900 |
-| Training Samples |     720 |
-| Testing Samples  |     180 |
+The test set contained:
 
-The class distribution in the test set is:
+| Class | Samples |
+|---|---:|
+| Normal Samples | 178 |
+| Seizure Samples | 2 |
 
-| Class           | Samples |
-| --------------- | ------: |
-| Normal Samples  |     178 |
-| Seizure Samples |       2 |
+The model was evaluated using:
 
-The model is evaluated using the following metrics:
-
-* Accuracy
-* Precision
-* Sensitivity (Recall)
-* Specificity
-* F1-Score
-* Balanced Accuracy
-* Confusion Matrix
-* Classification Report
+- Accuracy
+- Precision
+- Sensitivity (Recall)
+- Specificity
+- F1-Score
+- Balanced Accuracy
+- Confusion Matrix
+- Classification Report
 
 Because the dataset is severely imbalanced, accuracy alone is not considered sufficient for evaluating seizure detection performance.
 
@@ -312,10 +320,35 @@ Because the dataset is severely imbalanced, accuracy alone is not considered suf
 
 ## 11. Baseline Model Results
 
-The Random Forest model was initially evaluated using the default classification threshold:
+The baseline Random Forest model was initially evaluated using the default classification threshold:
 
 ```text
 Threshold = 0.50
+```
+
+The model achieved high overall accuracy on the test set, but this result was strongly influenced by the large number of normal samples.
+
+The baseline evaluation demonstrated the central challenge of this project:
+
+```text
+High overall accuracy
+        +
+Poor seizure detection
+        =
+Class imbalance problem
+```
+
+The initial baseline model failed to reliably detect the seizure class in the test split.
+
+Therefore, the baseline result should not be interpreted as evidence of strong seizure detection performance.
+
+The baseline confusion matrix is stored in:
+
+```text
+images/random_forest_baseline_confusion_matrix.png
+```
+
+---
 
 ## 12. Classification Threshold Analysis
 
@@ -331,164 +364,184 @@ The following thresholds were evaluated:
 0.01
 ```
 
-The results were:
+The experimental results were:
 
 | Threshold | Sensitivity | Specificity |
-| --------- | ----------: | ----------: |
-| 0.50      |       0.00% |     100.00% |
-| 0.20      |       0.00% |     100.00% |
-| 0.10      |       0.00% |      96.07% |
-| 0.05      |      50.00% |      87.64% |
-| 0.01      |      50.00% |      63.48% |
+|---|---:|---:|
+| 0.50 | 0.00% | 100.00% |
+| 0.20 | 0.00% | 100.00% |
+| 0.10 | 0.00% | 96.07% |
+| 0.05 | 50.00% | 87.64% |
+| 0.01 | 50.00% | 63.48% |
 
-At a classification threshold of **0.05**, the confusion matrix was:
+At a threshold of **0.05**, the experimental confusion matrix was:
 
-|                    | Predicted Normal | Predicted Seizure |
-| ------------------ | ---------------: | ----------------: |
-| **Actual Normal**  |              156 |                22 |
-| **Actual Seizure** |                1 |                 1 |
+| | Predicted Normal | Predicted Seizure |
+|---|---:|---:|
+| **Actual Normal** | 156 | 22 |
+| **Actual Seizure** | 1 | 1 |
 
-At this threshold:
+This corresponds to:
 
 ```text
 Total Seizure Samples = 2
 Detected Seizures     = 1
 Sensitivity           = 50.00%
-```
 
-However:
-
-```text
-False Positives = 22
-Specificity     = 87.64%
+False Positives       = 22
+Specificity           = 87.64%
 ```
 
 This demonstrates the trade-off between increasing seizure sensitivity and increasing false-positive predictions.
 
-The threshold analysis results are saved in:
+The threshold analysis is exploratory because the test set contained only **two seizure samples**. Therefore, these results should not be considered statistically reliable threshold optimization.
+
+The threshold analysis output is stored in:
 
 ```text
 results/threshold_analysis.png
 ```
 
-The threshold analysis is exploratory because the test set contains only two seizure samples. Therefore, these results should not be considered statistically reliable threshold optimization.
+---
 
-## 12.5 Results and Visualizations
+## 13. Event-Level Validation
 
-The following visualizations summarize the performance of the Random Forest model, including the baseline evaluation and the final threshold-optimized results.
-
-### Baseline Confusion Matrix
-
-The baseline model uses the default classification threshold of 0.50. In the initial baseline evaluation, the model failed to detect seizure samples despite achieving high overall accuracy, demonstrating the impact of class imbalance on seizure detection performance.
-
-![Random Forest Baseline Confusion Matrix](images/random_forest_baseline_confusion_matrix.png)
-
-### Threshold Optimization
-
-The classification threshold was evaluated at multiple operating points to study the trade-off between seizure detection sensitivity and false-positive rate.
-
-The final operating threshold was selected as:
+An event-level validation was performed using:
 
 ```text
-Threshold = 0.40
-## 12.5 Results and Visualizations
+chb01_03.edf
+```
 
-The following visualizations summarize the performance of the Random Forest model, including the baseline evaluation and the final threshold-optimized results.
-
-### Baseline Confusion Matrix
-
-The baseline model uses the default classification threshold of 0.50. In the initial baseline evaluation, the model failed to detect seizure samples despite achieving high overall accuracy, demonstrating the impact of class imbalance on seizure detection performance.
-
-![Random Forest Baseline Confusion Matrix](images/random_forest_baseline_confusion_matrix.png)
-
-### Threshold Optimization
-
-The classification threshold was evaluated at multiple operating points to study the trade-off between seizure detection sensitivity and false-positive rate.
-
-The final operating threshold was selected as:
+The known seizure annotation for this recording indicates:
 
 ```text
-Threshold = 0.40
-## 13. Key Findings
+Seizure Start = 2996 seconds
+Seizure End   = 3036 seconds
+```
 
-The main findings of the current experiment are:
+The deployed Streamlit application processed the recording with:
 
-* The baseline Random Forest model achieved 98.89% accuracy at the default threshold.
-* The high accuracy was strongly influenced by severe class imbalance.
-* The baseline model failed to detect seizure samples at the default threshold.
-* Baseline sensitivity was 0%.
-* Baseline balanced accuracy was 50%.
-* Lowering the classification threshold to 0.05 increased sensitivity to 50% on the current test split.
-* The improved sensitivity resulted in additional false-positive predictions.
-* Specificity decreased from 100% to 87.64% at the 0.05 threshold.
-* The model demonstrates the difficulty of seizure detection when only a small number of seizure examples are available.
-* Accuracy alone is not an appropriate measure of success for this highly imbalanced classification problem.
+```text
+Channels            = 23
+Sampling Frequency  = 256 Hz
+Duration            = 3600 seconds
+Window Duration     = 4 seconds
+Total Windows       = 900
+Operating Threshold = 0.40
+```
 
-The current model is therefore best considered a **baseline research prototype** demonstrating an end-to-end EEG signal processing and machine learning workflow.
+The deployed application produced:
+
+```text
+Normal Windows       = 891
+Seizure-like Windows = 9
+```
+
+The detected seizure-like windows were:
+
+| Window | Time Interval | Seizure Probability |
+|---|---|---:|
+| 749 | 2996–3000 sec | 0.42 |
+| 750 | 3000–3004 sec | 0.81 |
+| 751 | 3004–3008 sec | 0.91 |
+| 752 | 3008–3012 sec | 0.83 |
+| 753 | 3012–3016 sec | 0.70 |
+| 754 | 3016–3020 sec | 0.62 |
+| 755 | 3020–3024 sec | 0.84 |
+| 756 | 3024–3028 sec | 0.97 |
+| 757 | 3028–3032 sec | 0.41 |
+
+The first detected seizure-like window begins at **2996 seconds**, which matches the annotated seizure start time.
+
+The detected sequence covers:
+
+```text
+2996–3032 seconds
+```
+
+while the annotated seizure extends to:
+
+```text
+3036 seconds
+```
+
+Because the prediction pipeline uses non-overlapping 4-second windows and an operating threshold of 0.40, the final interval from **3032–3036 seconds** was not classified as seizure-like.
+
+The highest seizure probability observed in this recording was:
+
+```text
+0.97
+```
+
+for the:
+
+```text
+3024–3028 second window
+```
+
+### Interpretation
+
+This result demonstrates that the deployed pipeline can identify a sequence of seizure-like EEG windows around the annotated seizure event in this particular recording.
+
+However, this is **event-level validation on a single EEG recording**. It should not be interpreted as a statistically reliable estimate of overall model sensitivity, specificity, or clinical performance.
 
 ---
 
-## 14. Prediction Analysis
+## 14. Streamlit Deployment
 
-The trained Random Forest model was also tested on individual EEG windows.
+The prediction pipeline was deployed as an interactive **Streamlit** web application.
 
-A normal EEG window was classified as:
+The application allows users to:
+
+1. Upload an EEG EDF recording.
+2. Inspect EEG recording information.
+3. Preprocess the EEG signal.
+4. Create 4-second EEG windows.
+5. Extract features.
+6. Run the trained Random Forest model.
+7. Apply the selected operating threshold.
+8. View normal and seizure-like window counts.
+9. Inspect window-level predictions.
+10. View the seizure detection timeline.
+11. Download prediction results.
+
+The deployed application successfully processed:
 
 ```text
-Normal / Non-Seizure
+chb01_03.edf
 ```
 
-Known seizure windows from the analyzed recording were also evaluated individually.
+with:
 
-For the known seizure windows:
+```text
+23 EEG channels
+256 Hz sampling frequency
+3600 seconds recording duration
+900 complete EEG windows
+```
 
-| Parameter             | Result  |
-| --------------------- | ------- |
-| Window Range          | 749–758 |
-| Total Seizure Windows | 10      |
-| Detected as Seizure   | 0       |
-| Detected as Normal    | 10      |
+The application is intended as a demonstration and research prototype.
 
-This indicates that the current Random Forest model failed to detect the known seizure windows in the analyzed recording.
-
-This result further demonstrates the limitations of the current baseline model and highlights the impact of:
-
-* Severe class imbalance
-* Limited seizure samples
-* Limited feature representation
-* Limited training data
-* Potential differences between EEG recordings
-
-The prediction pipeline is therefore useful for demonstrating the current model's behavior and identifying areas requiring further research.
+> The deployed application is not a medical diagnostic tool and should not be used for clinical decision-making.
 
 ---
 
-## 15. Feature Importance
+## 15. Key Findings
 
-The Random Forest model provides feature importance estimates that indicate the relative contribution of the extracted features to the model's predictions.
+The main findings of the current experiments are:
 
-The current feature set contains:
-
-```text
-Mean
-Std
-Variance
-Delta
-Theta
-Alpha
-Beta
-Gamma
-```
-
-The feature importance visualization is saved in:
-
-```text
-results/feature_importance.png
-```
-
-The feature importance analysis provides an initial interpretation of which signal characteristics contribute to the baseline model.
-
-However, feature importance should not be interpreted as evidence that any particular EEG frequency band is clinically diagnostic of seizures.
+- The project successfully implements an end-to-end EEG processing and machine learning workflow.
+- The baseline Random Forest model achieved high overall accuracy, but accuracy was strongly affected by severe class imbalance.
+- The baseline model did not reliably detect seizure samples at the default threshold.
+- Threshold adjustment demonstrated the trade-off between seizure sensitivity and false-positive predictions.
+- The experimental threshold results are unstable because only two seizure samples were present in the test set.
+- The deployed application successfully processed a 1-hour, 23-channel EEG recording.
+- The deployed pipeline created 900 complete 4-second windows.
+- Using an operating threshold of 0.40, the application identified 9 seizure-like windows.
+- On `chb01_03.edf`, the detected seizure-like activity began at 2996 seconds, matching the known seizure start time.
+- The detected sequence extended from 2996 to 3032 seconds, while the annotated seizure ended at 3036 seconds.
+- The highest seizure probability observed in the deployed test was 0.97.
+- The results demonstrate the feasibility of an end-to-end research prototype while also highlighting the need for larger datasets and stronger validation.
 
 ---
 
@@ -496,7 +549,7 @@ However, feature importance should not be interpreted as evidence that any parti
 
 ### 16.1 Severe Class Imbalance
 
-The current dataset contains substantially more normal EEG windows than seizure windows.
+The experimental dataset contains substantially more normal EEG windows than seizure windows.
 
 ```text
 Normal Windows  = 890
@@ -511,13 +564,11 @@ Only a small number of seizure windows are available in the current experiment.
 
 The test set contains only two seizure samples, making sensitivity estimates highly unstable.
 
-A single additional correct or incorrect seizure prediction can significantly change the measured sensitivity.
-
 ### 16.3 Limited Dataset Scope
 
 The current experiment uses a limited subset of the CHB-MIT dataset.
 
-The model has not yet been extensively evaluated across multiple patients.
+The model has not yet been extensively evaluated across multiple patients and recordings.
 
 ### 16.4 Patient-Independent Generalization
 
@@ -529,9 +580,21 @@ Patient-independent evaluation is required before making stronger claims about g
 
 The threshold analysis is based on a very small test set containing only two seizure samples.
 
-Therefore, the threshold results are exploratory and should not be considered statistically reliable threshold optimization.
+Therefore, the threshold results are exploratory.
 
-### 16.6 No Clinical Validation
+### 16.6 Single-Recording Event Validation
+
+The deployed event-level validation was demonstrated using one EEG recording.
+
+A single successful detection event does not establish general model performance.
+
+### 16.7 Limited Feature Representation
+
+The current model uses a relatively small feature set consisting of statistical and frequency-band features.
+
+More advanced time-frequency and nonlinear features may improve representation of complex EEG patterns.
+
+### 16.8 No Clinical Validation
 
 This project is an educational and research prototype.
 
@@ -543,49 +606,51 @@ The model has not been clinically validated and should not be used for medical d
 
 Future improvements may include:
 
-* Using a larger number of EEG recordings.
-* Including data from multiple patients.
-* Performing patient-independent evaluation.
-* Increasing the number of seizure samples.
-* Applying appropriate class imbalance handling techniques.
-* Exploring class weighting and resampling methods.
-* Performing stratified cross-validation.
-* Optimizing classification thresholds using a dedicated validation set.
-* Evaluating Precision-Recall curves.
-* Evaluating ROC-AUC.
-* Testing Support Vector Machines (SVM).
-* Testing XGBoost and other ensemble methods.
-* Exploring 1D CNN-based EEG classification.
-* Exploring LSTM and other deep learning approaches.
-* Extracting additional time-domain features.
-* Extracting additional frequency-domain features.
-* Investigating time-frequency representations such as wavelets.
-* Evaluating model performance using larger and more balanced test sets.
-* Improving seizure detection sensitivity while controlling false-positive rates.
-* Evaluating patient-independent and cross-patient performance.
-* Investigating subject-specific and generalized seizure detection models.
+- Using a larger number of EEG recordings.
+- Including data from multiple patients.
+- Performing patient-independent evaluation.
+- Increasing the number of seizure samples.
+- Applying appropriate class imbalance handling techniques.
+- Exploring class weighting and resampling methods.
+- Performing stratified cross-validation.
+- Optimizing classification thresholds using a dedicated validation set.
+- Evaluating Precision-Recall curves.
+- Evaluating ROC-AUC.
+- Testing Support Vector Machines (SVM).
+- Testing XGBoost and other ensemble methods.
+- Exploring 1D CNN-based EEG classification.
+- Exploring LSTM and other deep learning approaches.
+- Extracting additional time-domain features.
+- Extracting additional frequency-domain features.
+- Investigating time-frequency representations such as wavelets.
+- Evaluating performance across multiple patients.
+- Improving seizure detection sensitivity while controlling false-positive rates.
+- Investigating subject-specific and patient-independent seizure detection models.
 
 ---
 
 ## 18. Technologies Used
 
-The project uses the following technologies and libraries:
+The project uses:
 
-* Python
-* MNE-Python
-* NumPy
-* Pandas
-* SciPy
-* Matplotlib
-* Scikit-learn
-* Joblib
-* Jupyter Notebook
+- Python
+- MNE-Python
+- NumPy
+- Pandas
+- SciPy
+- Matplotlib
+- Scikit-learn
+- Joblib
+- Streamlit
+- Jupyter Notebook
 
 ---
 
 ## 19. Project Structure
 
-The repository is organized into separate directories for data, notebooks, models, results, visualizations, and source code.
+The repository contains the machine learning pipeline, deployment code, notebooks, model artifacts, and result files.
+
+A representative project structure is:
 
 ```text
 EEG-Seizure-Detection/
@@ -623,16 +688,18 @@ EEG-Seizure-Detection/
 │   └── threshold_analysis.png
 │
 ├── src/
-│   └── final_evaluation.py
+│   ├── __init__.py
+│   ├── feature_extraction.py
+│   ├── prediction.py
+│   └── preprocessing.py
 │
+├── app.py
 ├── .gitignore
 ├── README.md
 └── requirements.txt
 ```
 
-The raw CHB-MIT EDF recordings and the generated `windows.npy` file are intentionally excluded from the GitHub repository because of their large size.
-
-They should remain available locally for reproducing the full data-processing pipeline.
+Raw EDF recordings and temporary uploaded files are excluded from version control.
 
 ---
 
@@ -650,7 +717,7 @@ git clone https://github.com/ShivamKumarPrajapati-123/EEG-Seizure-Detection.git
 cd EEG-Seizure-Detection
 ```
 
-### Install the Required Python Packages
+### Install Required Packages
 
 ```bash
 pip install -r requirements.txt
@@ -658,9 +725,23 @@ pip install -r requirements.txt
 
 ---
 
-## 21. Running the Project
+## 21. Running the Project Locally
 
-The notebooks are designed to be executed in the following general sequence:
+### Run the Streamlit Application
+
+From the project root:
+
+```bash
+streamlit run app.py
+```
+
+The application will open in your browser.
+
+### Run the Notebook Workflow
+
+The notebooks demonstrate the individual stages of the project pipeline.
+
+The general sequence is:
 
 ```text
 01_Reading_EEG
@@ -684,23 +765,13 @@ The notebooks are designed to be executed in the following general sequence:
 10_Prediction
 ```
 
-The notebooks demonstrate the individual stages of the project pipeline.
-
-The final automated evaluation script can be executed from the project root using:
-
-```bash
-python src/final_evaluation.py
-```
-
-The script generates evaluation outputs and visualizations in the `results/` directory.
-
 ---
 
 ## 22. Reproducibility
 
-The project uses fixed random seeds where applicable to improve reproducibility of the machine learning experiments.
+The project uses fixed random seeds where applicable to improve reproducibility of machine learning experiments.
 
-### Main Processed Artifacts
+Important processed artifacts include:
 
 ```text
 data/features.csv
@@ -709,7 +780,7 @@ data/labels.npy
 models/random_forest_model.pkl
 ```
 
-### Evaluation Outputs
+Evaluation outputs include:
 
 ```text
 results/confusion_matrix.png
@@ -726,24 +797,26 @@ Raw EEG recordings are not stored in the repository and must be obtained separat
 
 **Status: Research and Development / Baseline Prototype**
 
-The current project demonstrates an end-to-end pipeline for EEG signal processing and machine learning-based seizure classification.
+The project demonstrates an end-to-end pipeline covering:
 
-The implemented pipeline covers:
-
-* EEG data loading
-* Signal preprocessing
-* Window segmentation
-* Seizure labeling
-* Feature extraction
-* Dataset construction
-* Machine learning model training
-* Model evaluation
-* Threshold analysis
-* Individual EEG window prediction
+- EEG data loading
+- Signal preprocessing
+- Window segmentation
+- Seizure labeling
+- Feature extraction
+- Dataset construction
+- Machine learning model training
+- Model evaluation
+- Classification threshold analysis
+- Individual EEG window prediction
+- Event-level detection
+- Streamlit deployment
 
 The current experimental results highlight the challenges of seizure detection under severe class imbalance.
 
-The baseline model demonstrates high overall accuracy but poor seizure detection sensitivity, emphasizing the importance of appropriate evaluation metrics and robust dataset construction.
+The baseline model demonstrates the importance of using appropriate evaluation metrics rather than relying only on overall accuracy.
+
+The deployed application demonstrates the complete prediction workflow on an EDF recording, including window-level predictions and a seizure detection timeline.
 
 Future development will focus on improving seizure detection sensitivity, increasing the amount of seizure data, performing patient-independent evaluation, and investigating more robust machine learning and deep learning approaches.
 
@@ -755,7 +828,7 @@ This project is developed for **educational and research purposes only**.
 
 The current model is **not a clinically validated medical device** and should not be used for medical diagnosis, treatment, or clinical decision-making.
 
-The reported results are based on a limited experimental dataset and should not be interpreted as evidence of clinical effectiveness.
+The reported results are based on limited experimental data and a limited event-level validation example. They should not be interpreted as evidence of clinical effectiveness.
 
 ---
 
@@ -765,15 +838,5 @@ The reported results are based on a limited experimental dataset and should not 
 
 Computer Science Engineering — Artificial Intelligence & Machine Learning
 
-**GitHub:**
+**GitHub:**  
 https://github.com/ShivamKumarPrajapati-123
----
-
-## 13. Event-Level Validation
-
-An event-level validation was performed using the `chb01_03.edf` EEG recording from the CHB-MIT dataset.
-
-The ground-truth seizure annotation for this recording indicates that the seizure occurred from:
-
-```text
-2996 seconds to 3036 seconds
