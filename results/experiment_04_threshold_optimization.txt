@@ -1,77 +1,59 @@
-
-============================================================
 EXPERIMENT 04: THRESHOLD OPTIMIZATION
-============================================================
+======================================
 
-Objective
-------------------------------------------------------------
 This experiment investigates the effect of classification
 threshold selection on EEG seizure detection performance.
 
-The class-weighted Random Forest model from Experiment 03
-was evaluated on the same unseen recording-wise test set.
+The Random Forest model was evaluated on the same unseen,
+recording-wise test set used in the original experiment.
 
-This experiment is part of a research and learning prototype
-and is not a clinically validated diagnostic system.
+UNSEEN TEST RECORDINGS
+----------------------
 
-
-============================================================
-TEST DATA
-============================================================
+- chb01_18.edf
+- chb01_21.edf
+- chb01_26.edf
+- chb01_42.edf
+- chb01_46.edf
 
 Number of test windows: 4181
-
 Normal windows: 4108
-
 Seizure windows: 73
 
 
-============================================================
 BASELINE THRESHOLD
-============================================================
+------------------
 
 Baseline threshold: 0.50
 
-Accuracy:           0.9873
 Precision:          0.8333
 Sensitivity/Recall: 0.3425
 Specificity:        0.9988
-F1-Score:           0.4854
 Balanced Accuracy:  0.6706
 
-Confusion Matrix:
-TN: 4107
-FP: 1
-FN: 61
-TP: 12
+True Positives:     25
+False Negatives:    48
 
 
-============================================================
 CANDIDATE THRESHOLD
-============================================================
+-------------------
 
 Candidate threshold: 0.10
 
-Accuracy:           0.9897
 Precision:          0.6562
 Sensitivity/Recall: 0.8630
 Specificity:        0.9920
-F1-Score:           0.7456
 Balanced Accuracy:  0.9275
 
-Confusion Matrix:
-TN: 4075
-FP: 33
-FN: 10
-TP: 63
+True Positives:     63
+False Negatives:    10
 
 
-============================================================
 THRESHOLD COMPARISON
-============================================================
+--------------------
 
-The threshold comparison evaluated multiple classification
-thresholds between 0.10 and 0.80.
+The threshold comparison evaluated classification thresholds
+between 0.10 and 0.80.
 
 The candidate threshold of 0.10 achieved the highest
 sensitivity, F1-score, and balanced accuracy among the
@@ -80,64 +62,39 @@ evaluated thresholds.
 At threshold 0.10, the model detected more seizure windows
 than at the default threshold of 0.50.
 
-However, lowering the threshold increased the number of
-false-positive predictions.
+However, lowering the threshold reduced precision and
+specificity. Therefore, threshold selection represents a
+trade-off between seizure sensitivity and false-positive rate.
 
-Therefore, threshold selection represents a trade-off
-between seizure sensitivity and false-positive rate.
+The default threshold of 0.50 achieved a seizure sensitivity
+of 34.25%.
 
+At the candidate threshold of 0.10, seizure sensitivity
+increased to 86.30%.
 
-============================================================
-INTERPRETATION
-============================================================
-
-The results demonstrate that classification threshold
-selection has a substantial effect on seizure detection
-performance.
-
-The default threshold of 0.50 achieved:
-
-Sensitivity: 0.3425
-
-At the candidate threshold of 0.10:
-
-Sensitivity: 0.8630
-
-This represents an increase in seizure sensitivity from
-34.25% to
-86.30%.
+This represents an increase in sensitivity of
+52.05
+percentage points.
 
 The number of detected seizure windows increased from
-12 to 63.
-
-However, false-positive predictions increased from
-1 to 33.
+25 to 63, while false negatives
+decreased from 48 to 10.
 
 The threshold of 0.10 is therefore considered a candidate
-operating threshold for this prototype based on the evaluated
-thresholds.
+sensitivity-oriented operating threshold for this research
+prototype based on the evaluated thresholds.
 
-Further validation using independent recordings and
-cross-validation is required before claiming that this
-threshold generalizes to unseen data.
+This result should be interpreted as exploratory threshold
+analysis. The candidate threshold was evaluated on the same
+unseen recording-wise test set and therefore should not be
+considered a universally optimal threshold.
 
+Future work should optimize the operating threshold using
+validation data or nested cross-validation and then evaluate
+the selected threshold on an independent test set.
 
-============================================================
-RESEARCH LIMITATION
-============================================================
-
-The candidate threshold was selected using the held-out
-recording-wise evaluation set.
-
-Therefore, the reported threshold performance should be
-interpreted as exploratory threshold analysis rather than
-final unbiased model selection.
-
-Future experiments should optimize the threshold using a
-separate validation set and reserve an untouched test set
-for final evaluation.
-
-
-============================================================
-EXPERIMENT 04 COMPLETED
-============================================================
+The results demonstrate that classification threshold selection
+has a substantial effect on seizure detection performance and
+highlights the importance of considering sensitivity,
+specificity, precision, F1-score, and balanced accuracy rather
+than relying on accuracy alone.
