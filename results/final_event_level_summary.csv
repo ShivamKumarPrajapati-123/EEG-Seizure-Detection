@@ -1,0 +1,2 @@
+threshold,seizure_containing_recordings,detected_seizure_events,missed_seizure_events,event_level_sensitivity
+0.1,3,3,0,1.0

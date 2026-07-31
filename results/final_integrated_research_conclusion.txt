@@ -1,0 +1,72 @@
+
+
+FINAL RESEARCH CONCLUSION
+=========================
+
+This project developed and evaluated a machine-learning-based EEG
+seizure detection pipeline using the CHB-MIT Scalp EEG dataset.
+
+The complete pipeline included EEG signal preprocessing, window-based
+segmentation, seizure/non-seizure labeling, feature extraction,
+machine-learning classification, threshold optimization, recording-wise
+evaluation, seizure event-level evaluation, and recording-wise
+cross-validation.
+
+The initial evaluation demonstrated that conventional accuracy alone
+is insufficient for assessing seizure detection performance because of
+the strong class imbalance between seizure and non-seizure EEG windows.
+
+Threshold optimization demonstrated that reducing the classification
+threshold from 0.50 to 0.10 substantially increased seizure sensitivity.
+In the 5-fold recording-wise cross-validation, sensitivity increased
+from 47.52% to 73.27%, while balanced accuracy increased from 73.71%
+to 86.37%. This improvement was accompanied by a reduction in precision
+from 76.19% to 51.75% and a small reduction in specificity from 99.89%
+to 99.47%.
+
+These results demonstrate an important sensitivity-specificity trade-off
+in EEG seizure detection. A lower threshold may be preferable when
+missing a seizure is considered more costly than generating additional
+false-positive predictions. However, the appropriate operating threshold
+depends on the intended application and clinical requirements.
+
+The recording-wise 5-fold cross-validation provides the strongest
+robustness evidence currently available in this project because
+recordings, rather than individual EEG windows, were separated between
+training and testing within each fold. This reduces the risk of
+overestimating performance due to highly similar windows originating
+from the same recording appearing in both training and testing sets.
+
+The event-level analysis demonstrated 100% seizure-event sensitivity
+on the evaluated seizure-containing recordings. Furthermore, the
+temporal consecutive-window analysis suggested that requiring multiple
+consecutive positive predictions can reduce false-positive recording
+detections while maintaining seizure-event sensitivity.
+
+However, these event-level and temporal results were obtained from a
+small evaluation set and should therefore be considered exploratory.
+The observed 100% sensitivity and specificity in the 20-second
+consecutive-window configuration cannot be interpreted as evidence of
+clinical generalization.
+
+The most important limitation of the current study is the limited
+patient diversity of the dataset used for evaluation. Although
+recording-wise cross-validation provides a stronger estimate of
+generalization to unseen recordings, it does not establish
+generalization to completely unseen patients.
+
+Therefore, the current system should be considered a research and
+learning prototype rather than a clinically validated diagnostic tool.
+
+Future work should include patient-independent validation using a larger
+multi-patient EEG dataset, evaluation across different seizure types,
+improved handling of class imbalance, analysis of false-positive
+detections, optimization of temporal post-processing strategies, and
+comparison with more advanced machine-learning and deep-learning
+approaches.
+
+Overall, the project demonstrates the feasibility of developing an
+EEG-based seizure detection system and highlights the importance of
+recording-wise validation, threshold optimization, event-level
+evaluation, and temporal consistency analysis when assessing seizure
+detection performance.

@@ -1,0 +1,6 @@
+experiment,evaluation,threshold,accuracy,precision,sensitivity,specificity,f1_score,balanced_accuracy
+Experiment 03,Recording-wise holdout,0.5,0.9873,0.8333,0.3425,0.9988,0.4854,0.6706
+Experiment 04,Recording-wise holdout,0.1,0.9897,0.6562,0.863,0.992,0.7456,0.9275
+Experiment 05,Recording/event-level holdout,0.1,0.6,0.6,1.0,0.0,0.75,
+Experiment 06,5-fold recording-wise cross-validation,0.5,0.9948,0.7619,0.4752,0.9989,0.5854,0.7371
+Experiment 06,5-fold recording-wise cross-validation,0.1,0.9927,0.5175,0.7327,0.9947,0.6066,0.8637

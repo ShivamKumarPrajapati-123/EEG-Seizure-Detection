@@ -1,0 +1,79 @@
+EXPERIMENT 02: RECORDING-WISE EVALUATION
+============================================================
+
+Objective:
+Evaluate the trained Random Forest model using a recording-wise split to investigate generalization to unseen EEG recordings.
+
+Training Recordings:
+- chb01_03.edf
+- chb01_04.edf
+- chb01_01.edf
+- chb01_09.edf
+- chb01_15.edf
+- chb01_30.edf
+- chb01_38.edf
+- chb01_39.edf
+- chb01_40.edf
+- chb01_41.edf
+
+Testing Recordings:
+- chb01_18.edf
+- chb01_21.edf
+- chb01_26.edf
+- chb01_42.edf
+- chb01_46.edf
+
+Recording Leakage:
+set()
+
+Dataset Information:
+Training Samples: 9000
+Testing Samples: 4181
+
+Training Class Distribution:
+Label
+0    8972
+1      28
+Name: count, dtype: int64
+
+Testing Class Distribution:
+Label
+0    4108
+1      73
+Name: count, dtype: int64
+
+Confusion Matrix:
+[[4108    0]
+ [  73    0]]
+
+Confusion Matrix Components:
+True Negatives: 4108
+False Positives: 0
+False Negatives: 73
+True Positives: 0
+
+Classification Report:
+              precision    recall  f1-score   support
+
+      Normal       0.98      1.00      0.99      4108
+     Seizure       0.00      0.00      0.00        73
+
+    accuracy                           0.98      4181
+   macro avg       0.49      0.50      0.50      4181
+weighted avg       0.97      0.98      0.97      4181
+
+
+Final Metrics:
+Accuracy: 0.9825
+Precision: 0.0000
+Sensitivity/Recall: 0.0000
+Specificity: 1.0000
+F1-Score: 0.0000
+Balanced Accuracy: 0.5000
+
+
+Research Interpretation:
+The recording-wise evaluation prevents windows from the same EEG recording from appearing in both training and testing sets.
+The model was evaluated on recordings that were not used during training.
+If seizure sensitivity is low despite high accuracy, the result indicates that severe class imbalance is affecting seizure detection performance.
+Accuracy alone should therefore not be considered sufficient for assessing EEG seizure detection performance.

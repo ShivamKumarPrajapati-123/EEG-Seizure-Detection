@@ -1,0 +1,497 @@
+
+============================================================
+EXPERIMENT 06: RECORDING-WISE STRATIFIED CROSS-VALIDATION
+============================================================
+
+Objective
+------------------------------------------------------------
+
+This experiment evaluates the generalization performance of a
+class-weighted Random Forest EEG seizure detection model using
+recording-wise stratified cross-validation.
+
+The purpose of this experiment is to determine whether the
+model can detect seizure-related EEG windows in recordings
+that were not used during model training.
+
+Unlike random window-level splitting, recording-wise
+cross-validation ensures that windows originating from the
+same EEG recording are not simultaneously present in the
+training and testing sets.
+
+This experiment is part of a research and learning prototype
+and is not a clinically validated diagnostic system.
+
+
+============================================================
+DATASET INFORMATION
+============================================================
+
+Total EEG recordings: 15
+
+Seizure-containing recordings: 6
+
+Normal-only recordings: 9
+
+Total EEG windows: 13,181
+
+Normal windows: 13,080
+
+Seizure windows: 101
+
+Feature count: 8
+
+Features:
+Mean
+Std
+Variance
+Delta
+Theta
+Alpha
+Beta
+Gamma
+
+
+============================================================
+CROSS-VALIDATION METHODOLOGY
+============================================================
+
+Cross-validation method:
+StratifiedGroupKFold
+
+Number of folds: 5
+
+Random state: 42
+
+Grouping variable:
+EEG recording filename
+
+Stratification variable:
+Recording-level seizure/normal status
+
+The grouping strategy ensures that windows from the same EEG
+recording are never distributed between training and testing
+sets within the same fold.
+
+Recording leakage checks confirmed that no recording appeared
+simultaneously in the training and testing sets of any fold.
+
+
+============================================================
+FOLD-LEVEL RESULTS
+============================================================
+
+
+Fold 1
+------------------------------------------------------------
+
+Testing recordings:
+chb01_01.edf, chb01_21.edf, chb01_40.edf
+
+Accuracy:           0.9970
+Precision:          0.8636
+Sensitivity/Recall: 0.7917
+Specificity:        0.9989
+F1-Score:           0.8261
+Balanced Accuracy:  0.8953
+
+Confusion Matrix Components:
+
+TN: 2673
+FP: 3
+FN: 5
+TP: 19
+
+
+Fold 2
+------------------------------------------------------------
+
+Testing recordings:
+chb01_03.edf, chb01_26.edf, chb01_41.edf
+
+Accuracy:           0.9924
+Precision:          1.0000
+Sensitivity/Recall: 0.5000
+Specificity:        1.0000
+F1-Score:           0.6667
+Balanced Accuracy:  0.7500
+
+Confusion Matrix Components:
+
+TN: 2345
+FP: 0
+FN: 18
+TP: 18
+
+
+Fold 3
+------------------------------------------------------------
+
+Testing recordings:
+chb01_04.edf, chb01_30.edf, chb01_46.edf
+
+Accuracy:           0.9981
+Precision:          0.8000
+Sensitivity/Recall: 0.5000
+Specificity:        0.9996
+F1-Score:           0.6154
+Balanced Accuracy:  0.7498
+
+Confusion Matrix Components:
+
+TN: 2691
+FP: 1
+FN: 4
+TP: 4
+
+
+Fold 4
+------------------------------------------------------------
+
+Testing recordings:
+chb01_09.edf, chb01_38.edf, chb01_42.edf
+
+Accuracy:           0.9959
+Precision:          0.0000
+Sensitivity/Recall: 0.0000
+Specificity:        0.9959
+F1-Score:           0.0000
+Balanced Accuracy:  0.9959
+
+Confusion Matrix Components:
+
+TN: 2689
+FP: 11
+FN: 0
+TP: 0
+
+
+Fold 5
+------------------------------------------------------------
+
+Testing recordings:
+chb01_15.edf, chb01_18.edf, chb01_39.edf
+
+Accuracy:           0.9904
+Precision:          1.0000
+Sensitivity/Recall: 0.2121
+Specificity:        1.0000
+F1-Score:           0.3500
+Balanced Accuracy:  0.6061
+
+Confusion Matrix Components:
+
+TN: 2667
+FP: 0
+FN: 26
+TP: 7
+
+
+============================================================
+ALL-FOLD CROSS-VALIDATION SUMMARY
+============================================================
+
+Mean Accuracy:
+0.9948 +/- 0.0033
+
+Mean Specificity:
+0.9989 +/- 0.0017
+
+Mean Balanced Accuracy:
+0.7994 +/- 0.1501
+
+
+============================================================
+SEIZURE-CONTAINING FOLD SUMMARY
+============================================================
+
+Number of folds containing seizure windows:
+4
+
+Sensitivity:
+0.5009 +/- 0.2366
+
+Precision:
+0.9159 +/- 0.1005
+
+F1-Score:
+0.6145 +/- 0.1979
+
+Balanced Accuracy:
+0.7503 +/- 0.1181
+
+
+============================================================
+POOLED CROSS-VALIDATION RESULTS
+============================================================
+
+Pooled Confusion Matrix Components:
+
+True Negatives:
+13065
+
+False Positives:
+15
+
+False Negatives:
+53
+
+True Positives:
+48
+
+Pooled Accuracy:
+0.9948
+
+Pooled Precision:
+0.7619
+
+Pooled Sensitivity/Recall:
+0.4752
+
+Pooled Specificity:
+0.9989
+
+Pooled F1-Score:
+0.5854
+
+Pooled Balanced Accuracy:
+0.7371
+
+
+============================================================
+CROSS-VALIDATION THRESHOLD ANALYSIS
+============================================================
+
+Two decision thresholds were evaluated using out-of-fold
+probability predictions.
+
+Threshold 0.50:
+------------------------------------------------------------
+
+Accuracy:
+0.9948
+
+Precision:
+0.7619
+
+Sensitivity:
+0.4752
+
+Specificity:
+0.9989
+
+F1-Score:
+0.5854
+
+Balanced Accuracy:
+0.7371
+
+TN: 13065
+FP: 15
+FN: 53
+TP: 48
+
+
+Threshold 0.10:
+------------------------------------------------------------
+
+Accuracy:
+0.9927
+
+Precision:
+0.5175
+
+Sensitivity:
+0.7327
+
+Specificity:
+0.9947
+
+F1-Score:
+0.6066
+
+Balanced Accuracy:
+0.8637
+
+TN: 13011
+FP: 69
+FN: 27
+TP: 74
+
+
+============================================================
+THRESHOLD INTERPRETATION
+============================================================
+
+The threshold of 0.10 improved seizure sensitivity compared
+with the default threshold of 0.50.
+
+Sensitivity increased from:
+
+0.4752
+
+to:
+
+0.7327
+
+The number of correctly detected seizure windows increased
+from:
+
+48
+
+to:
+
+74
+
+The number of missed seizure windows decreased from:
+
+53
+
+to:
+
+27
+
+However, the lower threshold also increased false-positive
+predictions from:
+
+15
+
+to:
+
+69
+
+Precision decreased from:
+
+0.7619
+
+to:
+
+0.5175
+
+Therefore, lowering the threshold improves seizure sensitivity
+at the cost of increased false-positive predictions.
+
+Among the evaluated thresholds, 0.10 provided the stronger
+exploratory trade-off based on sensitivity, F1-score, and
+balanced accuracy.
+
+
+============================================================
+RESEARCH INTERPRETATION
+============================================================
+
+The class-weighted Random Forest demonstrated strong
+specificity across unseen recordings.
+
+However, seizure sensitivity varied substantially between
+cross-validation folds.
+
+This indicates that model performance is influenced by
+recording-to-recording variability.
+
+The pooled cross-validation sensitivity at the default
+threshold of 0.50 was:
+
+0.4752
+
+When the threshold was reduced to 0.10 using out-of-fold
+predictions, pooled sensitivity increased to:
+
+0.7327
+
+The corresponding balanced accuracy increased from:
+
+0.7371
+
+to:
+
+0.8637
+
+These results suggest that threshold adjustment may improve
+seizure detection sensitivity in this prototype.
+
+However, the increase in sensitivity was accompanied by a
+reduction in precision and an increase in false-positive
+predictions.
+
+
+============================================================
+IMPORTANT METHODOLOGICAL LIMITATION
+============================================================
+
+The threshold of 0.10 was originally identified during the
+exploratory threshold analysis in Experiment 04.
+
+It was subsequently evaluated on out-of-fold predictions from
+recording-wise cross-validation.
+
+Therefore, the threshold comparison provides useful evidence
+about generalization but should not be interpreted as a fully
+nested threshold-optimization experiment.
+
+For a more rigorous final evaluation, threshold selection
+should be performed inside the training portion of each
+cross-validation fold using a separate validation subset.
+
+The final test recordings should remain completely untouched
+until final evaluation.
+
+
+============================================================
+EXPERIMENT LIMITATIONS
+============================================================
+
+1. The dataset contains only 15 EEG recordings.
+
+2. Only 6 recordings contain seizure activity.
+
+3. The number of seizure windows is substantially smaller than
+   the number of normal windows.
+
+4. Recording-to-recording variability affects seizure
+   detection sensitivity.
+
+5. The current model uses relatively simple statistical and
+   frequency-domain features.
+
+6. The current evaluation is window-based and does not fully
+   represent real-time seizure event detection.
+
+7. Threshold 0.10 was not selected using nested cross-validation.
+
+8. The system has not been clinically validated.
+
+
+============================================================
+CONCLUSION
+============================================================
+
+Recording-wise stratified cross-validation demonstrated that
+the class-weighted Random Forest model can generalize to
+previously unseen EEG recordings, but seizure detection
+performance varies between recordings.
+
+The model maintained very high specificity, indicating a low
+false-positive rate at the default threshold.
+
+Reducing the classification threshold from 0.50 to 0.10
+substantially improved pooled seizure sensitivity from
+47.52% to 73.27%.
+
+Balanced accuracy also improved from 73.71% to 86.37%.
+
+However, this improvement was accompanied by a reduction in
+precision and an increase in false-positive predictions.
+
+The results support threshold adjustment as a potentially
+useful strategy for improving seizure sensitivity in this
+research prototype.
+
+Further work should investigate nested threshold optimization,
+larger multi-patient datasets, patient-independent evaluation,
+and event-level seizure detection.
+
+
+============================================================
+EXPERIMENT 06 COMPLETED
+============================================================
