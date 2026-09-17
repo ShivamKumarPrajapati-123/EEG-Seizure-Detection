@@ -1,0 +1,12 @@
+CHB01 -> CHB02 CROSS-PATIENT EXPERIMENT
+STATUS: COMPLETE AND FROZEN
+
+Training patient: CHB01
+Test patient: CHB02
+Threshold: 0.05
+Threshold selected from: CHB01 internal validation
+CHB02 used for: final evaluation only
+
+No further model or threshold tuning should be performed on CHB02.
+
+Frozen at: 2026-09-17T21:43:36

@@ -1,0 +1,536 @@
+import numpy as np
+
+import pandas as pd
+
+
+
+# Load extracted EEG features
+
+X = np.load("../data/features.npy")
+
+
+
+# Load corresponding labels
+
+y = np.load("../data/labels.npy")
+
+
+
+print("Features Shape:", X.shape)
+
+print("Labels Shape:", y.shape)
+
+
+
+print("\nClass Distribution:")
+
+print("Normal Windows:", np.sum(y == 0))
+
+print("Seizure Windows:", np.sum(y == 1))
+
+
+from sklearn.model_selection import train_test_split
+
+
+
+# Split the dataset into training and testing sets
+
+# stratify=y preserves the normal/seizure ratio
+
+X_train, X_test, y_train, y_test = train_test_split(
+
+    X,
+
+    y,
+
+    test_size=0.20,
+
+    random_state=42,
+
+    stratify=y
+
+)
+
+
+
+print("Training Set:")
+
+print("X_train Shape:", X_train.shape)
+
+print("y_train Shape:", y_train.shape)
+
+
+
+print("\nTesting Set:")
+
+print("X_test Shape:", X_test.shape)
+
+print("y_test Shape:", y_test.shape)
+
+
+
+print("\nTraining Class Distribution:")
+
+print("Normal:", np.sum(y_train == 0))
+
+print("Seizure:", np.sum(y_train == 1))
+
+
+
+print("\nTesting Class Distribution:")
+
+print("Normal:", np.sum(y_test == 0))
+
+print("Seizure:", np.sum(y_test == 1))
+
+
+
+
+from sklearn.ensemble import RandomForestClassifier
+
+
+
+# Create baseline Random Forest model
+
+rf_baseline = RandomForestClassifier(
+
+    n_estimators=100,
+
+    random_state=42,
+
+    n_jobs=-1
+
+)
+
+
+
+# Train the model
+
+rf_baseline.fit(X_train, y_train)
+
+
+
+print("Baseline Random Forest training completed!")
+
+
+from sklearn.metrics import (
+
+    confusion_matrix,
+
+    classification_report,
+
+    accuracy_score
+
+)
+
+
+
+# Make predictions on the test set
+
+y_pred_baseline = rf_baseline.predict(X_test)
+
+
+
+# Calculate confusion matrix
+
+cm_baseline = confusion_matrix(
+
+    y_test,
+
+    y_pred_baseline
+
+)
+
+
+
+print("Baseline Confusion Matrix:")
+
+print(cm_baseline)
+
+
+
+print("\nBaseline Accuracy:")
+
+print(f"{accuracy_score(y_test, y_pred_baseline) * 100:.2f}%")
+
+
+
+print("\nBaseline Classification Report:")
+
+print(
+
+    classification_report(
+
+        y_test,
+
+        y_pred_baseline,
+
+        target_names=["Normal", "Seizure"],
+
+        zero_division=0
+
+    )
+
+)
+# ============================================
+
+# CELL 5: Detailed Baseline Metrics
+
+# ============================================
+
+
+
+from sklearn.metrics import confusion_matrix
+
+
+
+# Get TN, FP, FN, TP
+
+tn, fp, fn, tp = confusion_matrix(
+
+    y_test,
+
+    y_pred_baseline
+
+).ravel()
+
+
+
+# Calculate metrics
+
+sensitivity = tp / (tp + fn)
+
+specificity = tn / (tn + fp)
+
+precision = tp / (tp + fp)
+
+f1_score = 2 * (precision * sensitivity) / (precision + sensitivity)
+
+
+
+print("========== BASELINE MODEL METRICS ==========")
+
+
+
+print(f"True Negatives (TN): {tn}")
+
+print(f"False Positives (FP): {fp}")
+
+print(f"False Negatives (FN): {fn}")
+
+print(f"True Positives (TP): {tp}")
+
+
+
+print("\nSensitivity (Recall):", f"{sensitivity * 100:.2f}%")
+
+print("Specificity:", f"{specificity * 100:.2f}%")
+
+print("Precision:", f"{precision * 100:.2f}%")
+
+print("F1-Score:", f"{f1_score:.2f}")
+# ============================================
+
+# CELL 6: Threshold Optimization
+
+# ============================================
+
+
+
+import numpy as np
+
+from sklearn.metrics import confusion_matrix
+
+
+
+# Get probability of the Seizure class
+
+y_prob = rf_baseline.predict_proba(X_test)[:, 1]
+
+
+
+# Thresholds to evaluate
+
+thresholds = [0.50, 0.40, 0.30, 0.20, 0.10]
+
+
+
+print("========== THRESHOLD COMPARISON ==========\n")
+
+
+
+for threshold in thresholds:
+
+
+
+    # Convert probabilities into predictions
+
+    y_pred_threshold = (y_prob >= threshold).astype(int)
+
+
+
+    # Confusion matrix
+
+    tn, fp, fn, tp = confusion_matrix(
+
+        y_test,
+
+        y_pred_threshold
+
+    ).ravel()
+
+
+
+    # Calculate metrics
+
+    sensitivity = tp / (tp + fn) if (tp + fn) > 0 else 0
+
+    specificity = tn / (tn + fp) if (tn + fp) > 0 else 0
+
+    precision = tp / (tp + fp) if (tp + fp) > 0 else 0
+
+
+
+    f1 = (
+
+        2 * precision * sensitivity / (precision + sensitivity)
+
+        if (precision + sensitivity) > 0
+
+        else 0
+
+    )
+
+
+
+    accuracy = (tp + tn) / (tp + tn + fp + fn)
+
+
+
+    print(f"Threshold: {threshold:.2f}")
+
+    print(f"  Accuracy:    {accuracy * 100:.2f}%")
+
+    print(f"  Sensitivity:  {sensitivity * 100:.2f}%")
+
+    print(f"  Specificity:  {specificity * 100:.2f}%")
+
+    print(f"  Precision:    {precision * 100:.2f}%")
+
+    print(f"  F1-Score:     {f1:.2f}")
+
+    print(f"  TN: {tn}, FP: {fp}, FN: {fn}, TP: {tp}")
+
+    print("-" * 40)
+# ============================================
+
+# FINAL OPERATING THRESHOLD = 0.40
+
+# ============================================
+
+
+
+from sklearn.metrics import (
+
+    confusion_matrix,
+
+    accuracy_score,
+
+    precision_score,
+
+    recall_score,
+
+    f1_score
+
+)
+
+
+
+# Select final operating threshold
+
+final_threshold = 0.40
+
+
+
+# Generate final predictions
+
+y_pred_final = (y_prob >= final_threshold).astype(int)
+
+
+
+# Confusion matrix
+
+cm_final = confusion_matrix(y_test, y_pred_final)
+
+
+
+# Extract values
+
+tn, fp, fn, tp = cm_final.ravel()
+
+
+
+# Calculate metrics
+
+accuracy = accuracy_score(y_test, y_pred_final)
+
+precision = precision_score(y_test, y_pred_final)
+
+sensitivity = recall_score(y_test, y_pred_final)
+
+f1 = f1_score(y_test, y_pred_final)
+
+
+
+specificity = tn / (tn + fp)
+
+
+
+print("==========================================")
+
+print("FINAL RANDOM FOREST MODEL")
+
+print("==========================================")
+
+
+
+print("Operating Threshold:", final_threshold)
+
+
+
+print("\nConfusion Matrix:")
+
+print(cm_final)
+
+
+
+print("\nFinal Metrics:")
+
+print(f"Accuracy:    {accuracy * 100:.2f}%")
+
+print(f"Sensitivity: {sensitivity * 100:.2f}%")
+
+print(f"Specificity: {specificity * 100:.2f}%")
+
+print(f"Precision:   {precision * 100:.2f}%")
+
+print(f"F1-Score:    {f1:.2f}")
+
+
+
+print("\nConfusion Matrix Values:")
+
+print("TN:", tn)
+
+print("FP:", fp)
+
+print("FN:", fn)
+
+print("TP:", tp)
+# ============================================
+
+# FINAL CONFUSION MATRIX VISUALIZATION
+
+# ============================================
+
+
+
+import matplotlib.pyplot as plt
+
+import seaborn as sns
+
+
+
+plt.figure(figsize=(6, 5))
+
+
+
+sns.heatmap(
+
+    cm_final,
+
+    annot=True,
+
+    fmt="d",
+
+    cmap="Blues",
+
+    xticklabels=["Normal", "Seizure"],
+
+    yticklabels=["Normal", "Seizure"]
+
+)
+
+
+
+plt.xlabel("Predicted Label")
+
+plt.ylabel("Actual Label")
+
+plt.title("Random Forest Confusion Matrix (Threshold = 0.40)")
+
+
+
+plt.tight_layout()
+
+
+
+# Save final confusion matrix
+
+plt.savefig(
+
+    "../images/random_forest_final_confusion_matrix.png",
+
+    dpi=300,
+
+    bbox_inches="tight"
+
+)
+
+
+
+plt.show()
+
+
+
+print("Final confusion matrix saved successfully!")
+# Show all trained model-like variables currently available
+
+print([name for name in globals() if "model" in name.lower() or "forest" in name.lower()])
+# Show variables currently available in the notebook
+
+print([name for name in globals() if not name.startswith("_")])
+# ============================================
+
+# SAVE FINAL RANDOM FOREST MODEL
+
+# ============================================
+
+
+
+import os
+
+import joblib
+
+
+
+# Create models directory if it does not exist
+
+os.makedirs("../models", exist_ok=True)
+
+
+
+# Save the trained Random Forest model
+
+model_path = "../models/random_forest_final.pkl"
+
+
+
+joblib.dump(rf_baseline, model_path)
+
+
+
+print("Final Random Forest model saved successfully!")
+
+print("Model path:", model_path)
+print(os.path.exists("../models/random_forest_final.pkl"))

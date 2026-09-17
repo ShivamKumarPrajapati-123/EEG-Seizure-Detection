@@ -1,0 +1,7 @@
+Evaluation_Level,Model,Threshold,Accuracy,Precision,Sensitivity,Specificity,F1_Score,Balanced_Accuracy,True_Negatives,False_Positives,False_Negatives,True_Positives
+Dataset,Dataset,,,,,,,,,,,
+Recording-Wise Unseen Test,random_forest_final.pkl,0.5,0.9986,1.0,0.9178,1.0,0.9571,0.9589,4108.0,0.0,6.0,67.0
+Window-Level,random_forest_final.pkl,0.5,0.9986,1.0,0.9178,1.0,0.9571,0.9589,4108.0,0.0,6.0,67.0
+Temporal Confirmation (3 windows / 12 sec),random_forest_final.pkl,0.5,0.998087,0.911392,0.986301,0.998296,0.947368,0.992299,4101.0,7.0,1.0,72.0
+Temporal Confirmation (5 windows / 20 sec),random_forest_final.pkl,0.5,0.999043,1.0,0.945205,1.0,0.971831,0.972603,4108.0,0.0,4.0,69.0
+Event-Level,random_forest_final.pkl,0.5,,,1.0,,,,,,0.0,3.0

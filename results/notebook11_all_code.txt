@@ -1,0 +1,721 @@
+import os
+
+from pathlib import Path
+
+
+
+import numpy as np
+
+import pandas as pd
+
+import joblib
+
+import matplotlib.pyplot as plt
+
+
+
+from sklearn.metrics import (
+
+    confusion_matrix,
+
+    classification_report,
+
+    accuracy_score,
+
+    precision_score,
+
+    recall_score,
+
+    f1_score,
+
+    balanced_accuracy_score
+
+)
+
+
+
+print("Libraries imported successfully.")
+PROJECT_ROOT = Path.cwd().parent
+
+
+
+DATA_DIR = PROJECT_ROOT / "data"
+
+MODEL_DIR = PROJECT_ROOT / "models"
+
+RESULTS_DIR = PROJECT_ROOT / "results"
+
+IMAGES_DIR = PROJECT_ROOT / "images"
+
+
+
+FEATURES_PATH = DATA_DIR / "features.csv"
+
+METADATA_PATH = DATA_DIR / "window_metadata.csv"
+
+
+
+MODEL_PATH = MODEL_DIR / "random_forest_model.pkl"
+
+
+
+RESULTS_DIR.mkdir(exist_ok=True)
+
+IMAGES_DIR.mkdir(exist_ok=True)
+
+
+
+print("Project Root:", PROJECT_ROOT)
+
+print("Features Path:", FEATURES_PATH)
+
+print("Metadata Path:", METADATA_PATH)
+
+print("Model Path:", MODEL_PATH)
+features_df = pd.read_csv(FEATURES_PATH)
+
+
+
+print("Feature Dataset Loaded Successfully")
+
+print("=" * 60)
+
+
+
+print("Dataset Shape:", features_df.shape)
+
+
+
+print("\nColumns:")
+
+print(features_df.columns.tolist())
+
+
+
+print("\nFirst 5 Rows:")
+
+display(features_df.head())
+
+
+metadata_df = pd.read_csv(METADATA_PATH)
+
+
+
+print("Window Metadata Loaded Successfully")
+
+print("=" * 60)
+
+
+
+print("Metadata Shape:", metadata_df.shape)
+
+
+
+print("\nMetadata Columns:")
+
+print(metadata_df.columns.tolist())
+
+
+
+print("\nFirst 5 Rows:")
+
+display(metadata_df.head())
+
+
+print("Feature rows:", len(features_df))
+
+print("Metadata rows:", len(metadata_df))
+
+
+
+if len(features_df) == len(metadata_df):
+
+    print("\nSUCCESS: Feature rows and metadata rows are aligned.")
+
+else:
+
+    print("\nERROR: Feature rows and metadata rows are NOT aligned.")
+print("Unique EEG Recordings")
+
+print("=" * 60)
+
+
+
+recording_summary = (
+
+    metadata_df
+
+    .groupby("file")
+
+    .agg(
+
+        total_windows=("label", "count"),
+
+        seizure_windows=("label", "sum")
+
+    )
+
+    .reset_index()
+
+)
+
+
+
+recording_summary["normal_windows"] = (
+
+    recording_summary["total_windows"]
+
+    - recording_summary["seizure_windows"]
+
+)
+
+
+
+display(recording_summary)
+
+
+
+print("\nTotal Recordings:", len(recording_summary))
+
+
+seizure_recordings = recording_summary[
+
+    recording_summary["seizure_windows"] > 0
+
+]["file"].tolist()
+
+
+
+normal_recordings = recording_summary[
+
+    recording_summary["seizure_windows"] == 0
+
+]["file"].tolist()
+
+
+
+print("Seizure-containing recordings:")
+
+for file in seizure_recordings:
+
+    print(" -", file)
+
+
+
+print("\nNumber of seizure-containing recordings:",
+
+      len(seizure_recordings))
+
+
+
+print("\nNormal-only recordings:")
+
+for file in normal_recordings:
+
+    print(" -", file)
+
+
+
+print("\nNumber of normal-only recordings:",
+
+      len(normal_recordings))
+
+
+# Selected unseen test recordings
+
+test_recordings = [
+
+    "chb01_03.edf",
+
+    "chb01_15.edf",
+
+    "chb01_01.edf",
+
+    "chb01_09.edf",
+
+    "chb01_30.edf"
+
+]
+
+
+
+# All recordings in the dataset
+
+all_recordings = metadata_df["file"].unique().tolist()
+
+
+
+# Training recordings = all recordings not used for testing
+
+train_recordings = [
+
+    recording
+
+    for recording in all_recordings
+
+    if recording not in test_recordings
+
+]
+
+
+
+print("TRAINING RECORDINGS")
+
+print("=" * 60)
+
+
+
+for recording in train_recordings:
+
+    print(" -", recording)
+
+
+
+print("\nNumber of training recordings:",
+
+      len(train_recordings))
+
+
+
+print("\nTESTING RECORDINGS")
+
+print("=" * 60)
+
+
+
+for recording in test_recordings:
+
+    print(" -", recording)
+
+
+
+print("\nNumber of testing recordings:",
+
+      len(test_recordings))
+# ============================================================
+
+# VERIFY RECORDING LEAKAGE
+
+# ============================================================
+
+
+
+train_set = set(train_recordings)
+
+test_set = set(test_recordings)
+
+
+
+overlap = train_set.intersection(test_set)
+
+
+
+print("Training recordings:", len(train_set))
+
+print("Testing recordings:", len(test_set))
+
+
+
+print("\nOverlapping recordings:")
+
+print(overlap)
+
+
+
+if len(overlap) == 0:
+
+    print("\nSUCCESS: No recording leakage detected.")
+
+else:
+
+    print("\nERROR: Recording leakage detected!")
+# ============================================================
+
+# CREATE RECORDING-WISE TRAINING AND TESTING DATASETS
+
+# ============================================================
+
+
+
+# Feature columns used by the Random Forest model
+
+feature_names = [
+
+    "Mean",
+
+    "Std",
+
+    "Variance",
+
+    "Delta",
+
+    "Theta",
+
+    "Alpha",
+
+    "Beta",
+
+    "Gamma"
+
+]
+
+
+
+# Create masks based on recording names
+
+train_mask = metadata_df["file"].isin(train_recordings)
+
+test_mask = metadata_df["file"].isin(test_recordings)
+
+
+
+# Create feature matrices
+
+X_train_recording = features_df.loc[
+
+    train_mask,
+
+    feature_names
+
+]
+
+
+
+X_test_recording = features_df.loc[
+
+    test_mask,
+
+    feature_names
+
+]
+
+
+
+# Create labels
+
+y_train_recording = features_df.loc[
+
+    train_mask,
+
+    "Label"
+
+]
+
+
+
+y_test_recording = features_df.loc[
+
+    test_mask,
+
+    "Label"
+
+]
+
+
+
+print("Recording-Wise Dataset")
+
+print("=" * 60)
+
+
+
+print("\nTraining Features Shape:",
+
+      X_train_recording.shape)
+
+
+
+print("Training Labels Shape:",
+
+      y_train_recording.shape)
+
+
+
+print("\nTesting Features Shape:",
+
+      X_test_recording.shape)
+
+
+
+print("Testing Labels Shape:",
+
+      y_test_recording.shape)
+# ============================================================
+
+# CHECK RECORDING-WISE CLASS DISTRIBUTION
+
+# ============================================================
+
+
+
+print("TRAINING CLASS DISTRIBUTION")
+
+print("=" * 60)
+
+
+
+print(
+
+    y_train_recording.value_counts()
+
+    .sort_index()
+
+)
+
+
+
+print("\nTesting CLASS DISTRIBUTION")
+
+print("=" * 60)
+
+
+
+print(
+
+    y_test_recording.value_counts()
+
+    .sort_index()
+
+)
+# ============================================================
+
+# LOAD EXISTING RANDOM FOREST MODEL
+
+# ============================================================
+
+
+
+model = joblib.load(MODEL_PATH)
+
+
+
+print("Model loaded successfully.")
+
+print("=" * 60)
+
+
+
+print("Model Type:", type(model).__name__)
+
+
+
+print("\nModel Parameters:")
+
+print(model)
+# ============================================================
+
+# GENERATE PREDICTIONS ON UNSEEN RECORDINGS
+
+# ============================================================
+
+
+
+# Predict class labels
+
+y_pred_recording = model.predict(
+
+    X_test_recording
+
+)
+
+
+
+# Predict seizure probabilities
+
+y_prob_recording = model.predict_proba(
+
+    X_test_recording
+
+)[:, 1]
+
+
+
+print("Predictions generated successfully.")
+
+print("=" * 60)
+
+
+
+print("Total Test Samples:",
+
+      len(y_pred_recording))
+
+
+
+print("\nPredicted Class Distribution:")
+
+print(
+
+    pd.Series(y_pred_recording)
+
+    .value_counts()
+
+    .sort_index()
+
+)
+# ============================================================
+
+# CONFUSION MATRIX
+
+# ============================================================
+
+
+
+cm_recording = confusion_matrix(
+
+    y_test_recording,
+
+    y_pred_recording
+
+)
+
+
+
+print("Recording-Wise Confusion Matrix")
+
+print("=" * 60)
+
+
+
+print(cm_recording)
+# ============================================================
+
+# CONFUSION MATRIX COMPONENTS
+
+# ============================================================
+
+
+
+tn, fp, fn, tp = cm_recording.ravel()
+
+
+
+print("True Negatives (TN):", tn)
+
+print("False Positives (FP):", fp)
+
+print("False Negatives (FN):", fn)
+
+print("True Positives (TP):", tp)
+# ============================================================
+
+# RECORDING-WISE MODEL METRICS
+
+# ============================================================
+
+
+
+accuracy_recording = accuracy_score(
+
+    y_test_recording,
+
+    y_pred_recording
+
+)
+
+
+
+precision_recording = precision_score(
+
+    y_test_recording,
+
+    y_pred_recording,
+
+    zero_division=0
+
+)
+
+
+
+sensitivity_recording = recall_score(
+
+    y_test_recording,
+
+    y_pred_recording,
+
+    zero_division=0
+
+)
+
+
+
+specificity_recording = (
+
+    tn / (tn + fp)
+
+    if (tn + fp) > 0
+
+    else 0
+
+)
+
+
+
+f1_recording = f1_score(
+
+    y_test_recording,
+
+    y_pred_recording,
+
+    zero_division=0
+
+)
+
+
+
+balanced_accuracy_recording = balanced_accuracy_score(
+
+    y_test_recording,
+
+    y_pred_recording
+
+)
+
+
+
+print("RECORDING-WISE EVALUATION METRICS")
+
+print("=" * 60)
+
+
+
+print(f"Accuracy:           {accuracy_recording:.4f}")
+
+print(f"Precision:          {precision_recording:.4f}")
+
+print(f"Sensitivity/Recall: {sensitivity_recording:.4f}")
+
+print(f"Specificity:        {specificity_recording:.4f}")
+
+print(f"F1-Score:           {f1_recording:.4f}")
+
+print(f"Balanced Accuracy:  {balanced_accuracy_recording:.4f}")
+# ============================================================
+
+# CLASSIFICATION REPORT
+
+# ============================================================
+
+
+
+recording_report = classification_report(
+
+    y_test_recording,
+
+    y_pred_recording,
+
+    target_names=["Normal", "Seizure"],
+
+    zero_division=0
+
+)
+
+
+
+print("RECORDING-WISE CLASSIFICATION REPORT")
+
+print("=" * 60)
+
+
+
+print(recording_report)

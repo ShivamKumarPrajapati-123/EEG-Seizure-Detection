@@ -1,0 +1,32 @@
+{
+    "experiment": "Cross-Patient EEG Seizure Detection",
+    "training_patient": "CHB01",
+    "test_patients": [
+        "CHB02",
+        "CHB03"
+    ],
+    "window_seconds": 4,
+    "window_samples": 1024,
+    "sampling_frequency_hz": 256,
+    "feature_count": 8,
+    "features": [
+        "Mean",
+        "Std",
+        "Variance",
+        "Delta",
+        "Theta",
+        "Alpha",
+        "Beta",
+        "Gamma"
+    ],
+    "model": "RandomForestClassifier",
+    "estimators": 200,
+    "class_weight": "balanced",
+    "threshold": 0.05,
+    "threshold_selected_from": "CHB01 internal validation",
+    "chb02_used_for_threshold_tuning": false,
+    "chb03_used_for_threshold_tuning": false,
+    "chb02_status": "Final evaluation only",
+    "chb03_status": "Final evaluation only",
+    "experiment_status": "Complete and frozen"
+}

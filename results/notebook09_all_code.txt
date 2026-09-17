@@ -1,0 +1,820 @@
+import numpy as np
+
+import pandas as pd
+
+import matplotlib.pyplot as plt
+
+import joblib
+
+
+
+from sklearn.model_selection import train_test_split
+
+from sklearn.metrics import (
+
+    accuracy_score,
+
+    precision_score,
+
+    recall_score,
+
+    f1_score,
+
+    confusion_matrix,
+
+    classification_report,
+
+    balanced_accuracy_score,
+
+    ConfusionMatrixDisplay
+
+)
+
+
+
+print("Libraries imported successfully!")
+# Load feature dataset
+
+features = np.load("../data/features.npy")
+
+labels = np.load("../data/labels.npy")
+
+
+
+# Load trained Random Forest model
+
+model = joblib.load("../models/random_forest_model.pkl")
+
+
+
+print("Model loaded successfully!")
+
+
+
+print("\nFeatures Shape:", features.shape)
+
+print("Labels Shape:", labels.shape)
+
+
+
+print("\nClass Distribution:")
+
+print("Normal:", np.sum(labels == 0))
+
+print("Seizure:", np.sum(labels == 1))
+# Recreate the stratified train-test split
+
+
+
+X_train, X_test, y_train, y_test = train_test_split(
+
+    features,
+
+    labels,
+
+    test_size=0.20,
+
+    random_state=42,
+
+    stratify=labels
+
+)
+
+
+
+print("Training Features Shape:", X_train.shape)
+
+print("Testing Features Shape:", X_test.shape)
+
+
+
+print("Training Labels Shape:", y_train.shape)
+
+print("Testing Labels Shape:", y_test.shape)
+
+
+
+print("\nTraining Class Distribution:")
+
+print(np.unique(y_train, return_counts=True))
+
+
+
+print("\nTesting Class Distribution:")
+
+print(np.unique(y_test, return_counts=True))
+# Baseline prediction using default threshold = 0.5
+
+
+
+y_pred_baseline = model.predict(X_test)
+
+
+
+print("Baseline predictions generated successfully!")
+
+
+
+print("\nActual Class Distribution:")
+
+print(np.unique(y_test, return_counts=True))
+
+
+
+print("\nPredicted Class Distribution:")
+
+print(np.unique(y_pred_baseline, return_counts=True))
+# Baseline confusion matrix
+
+
+
+cm_baseline = confusion_matrix(
+
+    y_test,
+
+    y_pred_baseline
+
+)
+
+
+
+print("Baseline Confusion Matrix:")
+
+print(cm_baseline)
+
+
+
+print("\nBaseline Classification Report:")
+
+
+
+print(
+
+    classification_report(
+
+        y_test,
+
+        y_pred_baseline,
+
+        target_names=["Normal", "Seizure"],
+
+        zero_division=0
+
+    )
+
+)
+# Calculate baseline metrics
+
+
+
+baseline_accuracy = accuracy_score(
+
+    y_test,
+
+    y_pred_baseline
+
+)
+
+
+
+baseline_precision = precision_score(
+
+    y_test,
+
+    y_pred_baseline,
+
+    zero_division=0
+
+)
+
+
+
+baseline_recall = recall_score(
+
+    y_test,
+
+    y_pred_baseline,
+
+    zero_division=0
+
+)
+
+
+
+baseline_f1 = f1_score(
+
+    y_test,
+
+    y_pred_baseline,
+
+    zero_division=0
+
+)
+
+
+
+tn, fp, fn, tp = cm_baseline.ravel()
+
+
+
+baseline_sensitivity = tp / (tp + fn)
+
+
+
+baseline_specificity = tn / (tn + fp)
+
+
+
+baseline_balanced_accuracy = balanced_accuracy_score(
+
+    y_test,
+
+    y_pred_baseline
+
+)
+
+
+
+print("Baseline Results")
+
+print("--------------------------")
+
+print("Accuracy:", baseline_accuracy)
+
+print("Precision:", baseline_precision)
+
+print("Sensitivity:", baseline_sensitivity)
+
+print("Specificity:", baseline_specificity)
+
+print("F1-Score:", baseline_f1)
+
+print("Balanced Accuracy:", baseline_balanced_accuracy)
+# Generate seizure probabilities
+
+
+
+y_prob = model.predict_proba(X_test)[:, 1]
+
+
+
+# Selected threshold from our experiment
+
+best_threshold = 0.05
+
+
+
+# Generate threshold-adjusted predictions
+
+y_pred_threshold = (
+
+    y_prob >= best_threshold
+
+).astype(int)
+
+
+
+print("Threshold-adjusted predictions generated successfully!")
+
+print("Selected Threshold:", best_threshold)
+
+
+
+print("\nPredicted Class Distribution:")
+
+print(np.unique(y_pred_threshold, return_counts=True))
+# Threshold-adjusted confusion matrix
+
+
+
+cm_threshold = confusion_matrix(
+
+    y_test,
+
+    y_pred_threshold
+
+)
+
+
+
+print("Threshold-Adjusted Confusion Matrix:")
+
+print(cm_threshold)
+
+
+
+print("\nThreshold-Adjusted Classification Report:")
+
+
+
+print(
+
+    classification_report(
+
+        y_test,
+
+        y_pred_threshold,
+
+        target_names=["Normal", "Seizure"],
+
+        zero_division=0
+
+    )
+
+)
+# Calculate threshold-adjusted metrics
+
+
+
+threshold_accuracy = accuracy_score(
+
+    y_test,
+
+    y_pred_threshold
+
+)
+
+
+
+threshold_precision = precision_score(
+
+    y_test,
+
+    y_pred_threshold,
+
+    zero_division=0
+
+)
+
+
+
+threshold_recall = recall_score(
+
+    y_test,
+
+    y_pred_threshold,
+
+    zero_division=0
+
+)
+
+
+
+threshold_f1 = f1_score(
+
+    y_test,
+
+    y_pred_threshold,
+
+    zero_division=0
+
+)
+
+
+
+tn, fp, fn, tp = cm_threshold.ravel()
+
+
+
+threshold_sensitivity = tp / (tp + fn)
+
+
+
+threshold_specificity = tn / (tn + fp)
+
+
+
+threshold_balanced_accuracy = balanced_accuracy_score(
+
+    y_test,
+
+    y_pred_threshold
+
+)
+
+
+
+print("Threshold-Adjusted Results")
+
+print("--------------------------")
+
+print("Accuracy:", threshold_accuracy)
+
+print("Precision:", threshold_precision)
+
+print("Sensitivity:", threshold_sensitivity)
+
+print("Specificity:", threshold_specificity)
+
+print("F1-Score:", threshold_f1)
+
+print("Balanced Accuracy:", threshold_balanced_accuracy)
+# Compare baseline and threshold-adjusted models
+
+
+
+comparison = pd.DataFrame({
+
+    "Metric": [
+
+        "Accuracy",
+
+        "Precision",
+
+        "Sensitivity",
+
+        "Specificity",
+
+        "F1-Score",
+
+        "Balanced Accuracy"
+
+    ],
+
+    
+
+    "Baseline (0.50)": [
+
+        baseline_accuracy,
+
+        baseline_precision,
+
+        baseline_sensitivity,
+
+        baseline_specificity,
+
+        baseline_f1,
+
+        baseline_balanced_accuracy
+
+    ],
+
+    
+
+    "Threshold Adjusted (0.05)": [
+
+        threshold_accuracy,
+
+        threshold_precision,
+
+        threshold_sensitivity,
+
+        threshold_specificity,
+
+        threshold_f1,
+
+        threshold_balanced_accuracy
+
+    ]
+
+})
+
+
+
+comparison
+# Plot baseline confusion matrix
+
+
+
+fig, ax = plt.subplots(figsize=(6, 5))
+
+
+
+ConfusionMatrixDisplay(
+
+    confusion_matrix=cm_baseline,
+
+    display_labels=["Normal", "Seizure"]
+
+).plot(ax=ax)
+
+
+
+plt.title("Random Forest - Baseline Confusion Matrix")
+
+plt.tight_layout()
+
+
+
+plt.savefig(
+
+    "../images/random_forest_baseline_confusion_matrix.png",
+
+    dpi=300,
+
+    bbox_inches="tight"
+
+)
+
+
+
+plt.show()
+# Plot threshold-adjusted confusion matrix
+
+
+
+fig, ax = plt.subplots(figsize=(6, 5))
+
+
+
+ConfusionMatrixDisplay(
+
+    confusion_matrix=cm_threshold,
+
+    display_labels=["Normal", "Seizure"]
+
+).plot(ax=ax)
+
+
+
+plt.title(
+
+    "Random Forest - Threshold Adjusted (0.05)"
+
+)
+
+
+
+plt.tight_layout()
+
+
+
+plt.savefig(
+
+    "../images/random_forest_threshold_confusion_matrix.png",
+
+    dpi=300,
+
+    bbox_inches="tight"
+
+)
+
+
+
+plt.show()
+# FINAL AUTHORITATIVE MODEL EVALUATION
+
+
+
+import numpy as np
+
+import joblib
+
+
+
+from sklearn.model_selection import train_test_split
+
+from sklearn.metrics import (
+
+    confusion_matrix,
+
+    classification_report,
+
+    accuracy_score,
+
+    precision_score,
+
+    recall_score,
+
+    f1_score,
+
+    balanced_accuracy_score
+
+)
+
+
+
+# Load the exact dataset
+
+features = np.load("../data/features.npy")
+
+labels = np.load("../data/labels.npy")
+
+
+
+# Load the exact trained model
+
+model = joblib.load("../models/random_forest_model.pkl")
+
+
+
+# Create one fixed, stratified split
+
+X_train, X_test, y_train, y_test = train_test_split(
+
+    features,
+
+    labels,
+
+    test_size=0.20,
+
+    random_state=42,
+
+    stratify=labels
+
+)
+
+
+
+# Get probability predictions
+
+y_prob = model.predict_proba(X_test)[:, 1]
+
+
+
+# Default threshold
+
+threshold = 0.50
+
+
+
+y_pred = (y_prob >= threshold).astype(int)
+
+
+
+# Metrics
+
+cm = confusion_matrix(y_test, y_pred)
+
+
+
+tn, fp, fn, tp = cm.ravel()
+
+
+
+accuracy = accuracy_score(y_test, y_pred)
+
+precision = precision_score(y_test, y_pred, zero_division=0)
+
+recall = recall_score(y_test, y_pred, zero_division=0)
+
+f1 = f1_score(y_test, y_pred, zero_division=0)
+
+specificity = tn / (tn + fp)
+
+balanced_acc = balanced_accuracy_score(y_test, y_pred)
+
+
+
+print("FINAL AUTHORITATIVE EVALUATION")
+
+print("=" * 40)
+
+
+
+print("\nConfusion Matrix:")
+
+print(cm)
+
+
+
+print("\nClassification Report:")
+
+print(
+
+    classification_report(
+
+        y_test,
+
+        y_pred,
+
+        target_names=["Normal", "Seizure"],
+
+        zero_division=0
+
+    )
+
+)
+
+
+
+print("Accuracy:", accuracy)
+
+print("Precision:", precision)
+
+print("Sensitivity:", recall)
+
+print("Specificity:", specificity)
+
+print("F1-Score:", f1)
+
+print("Balanced Accuracy:", balanced_acc)
+
+
+
+print("\nTest Class Distribution:")
+
+print(np.unique(y_test, return_counts=True))
+
+
+
+print("\nPredicted Class Distribution:")
+
+print(np.unique(y_pred, return_counts=True))
+
+
+
+print("\nTest Seizure Probabilities:")
+
+print(y_prob[y_test == 1])
+# FINAL THRESHOLD ANALYSIS
+
+
+
+threshold = 0.05
+
+
+
+y_pred_threshold = (
+
+    y_prob >= threshold
+
+).astype(int)
+
+
+
+cm_threshold = confusion_matrix(
+
+    y_test,
+
+    y_pred_threshold
+
+)
+
+
+
+tn, fp, fn, tp = cm_threshold.ravel()
+
+
+
+sensitivity_threshold = tp / (tp + fn)
+
+
+
+specificity_threshold = tn / (tn + fp)
+
+
+
+print("FINAL THRESHOLD ANALYSIS")
+
+print("=" * 40)
+
+
+
+print("Threshold:", threshold)
+
+
+
+print("\nConfusion Matrix:")
+
+print(cm_threshold)
+
+
+
+print("\nSensitivity:", sensitivity_threshold)
+
+
+
+print("Specificity:", specificity_threshold)
+
+
+
+print("\nPredicted Class Distribution:")
+
+print(
+
+    np.unique(
+
+        y_pred_threshold,
+
+        return_counts=True
+
+    )
+
+)
+
+
+
+print("\nClassification Report:")
+
+print(
+
+    classification_report(
+
+        y_test,
+
+        y_pred_threshold,
+
+        target_names=[
+
+            "Normal",
+
+            "Seizure"
+
+        ],
+
+        zero_division=0
+
+    )
+
+)

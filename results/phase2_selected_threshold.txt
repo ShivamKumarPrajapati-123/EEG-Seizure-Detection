@@ -1,0 +1,6 @@
+Selected threshold: 0.05
+Validation sensitivity: 0.6667
+Validation specificity: 0.9983
+Validation precision: 0.8000
+Validation F1: 0.7273
+Validation balanced accuracy: 0.8325

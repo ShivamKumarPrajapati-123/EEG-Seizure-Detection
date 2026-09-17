@@ -1,0 +1,123 @@
+import mne
+
+import matplotlib.pyplot as plt
+file_path = r"C:\users\Prajapati_Shivam\EEG-Seizure-Detection\data\chb01\chb01_01.edf"
+
+raw = mne.io.read_raw_edf(file_path, preload = True)
+
+print(raw)
+raw_filtered = raw.copy()
+raw_filtered.filter(l_freq=0.5, h_freq=40)
+print("Original Data Shape :", raw.get_data().shape)
+print("Filtered Data Shape :", raw_filtered.get_data().shape)
+import matplotlib.pyplot as plt
+original = raw.get_data()
+filtered = raw_filtered.get_data()
+sfreq = int(raw.info["sfreq"])
+samples = 10*sfreq
+plt.figure(figsize=(15,5))
+plt.plot(original[0][:samples], label="Original EEG")
+plt.plot(filtered[0][:samples], label="Filtered EEG")
+plt.title("Original vs Filtered EEG (First Channel)")
+plt.xlabel("Samples")
+plt.ylabel("Amplitude")
+plt.legend()
+plt.grid(True)
+plt.show()
+import matplotlib.pyplot as plt
+
+
+
+# Get original data
+
+original = raw.get_data()
+
+
+
+# Get filtered data
+
+filtered = raw_filtered.get_data()
+
+
+
+# Sampling frequency
+
+sfreq = int(raw.info["sfreq"])
+
+
+
+# First 10 seconds
+
+samples = 10 * sfreq
+
+
+
+plt.figure(figsize=(15,5))
+
+
+
+plt.plot(original[0][:samples], label="Original EEG")
+
+
+
+plt.plot(filtered[0][:samples], label="Filtered EEG")
+
+
+
+plt.title("Original vs Filtered EEG (First Channel)")
+
+
+
+plt.xlabel("Samples")
+
+
+
+plt.ylabel("Amplitude")
+
+
+
+plt.legend()
+
+
+
+plt.grid(True)
+
+
+
+plt.show()
+raw_notch = raw_filtered.copy()
+raw_notch.notch_filter(freqs=50)
+import matplotlib.pyplot as plt
+
+filtered = raw_filtered.get_data()
+
+notched = raw_notch.get_data()
+sfreq = int(raw.info["sfreq"])
+samples = 10*sfreq
+
+
+
+plt.figure(figsize=(15,5))
+
+
+
+plt.plot(filtered[0][:samples], label="Band-pass Filtered")
+
+plt.plot(notched[0][:samples], label="Band-pass + Notch")
+
+
+
+plt.title("Filtered EEG vs Notch Filtered EEG")
+
+plt.xlabel("Samples")
+
+plt.ylabel("Amplitude")
+
+plt.legend()
+
+plt.grid(True)
+
+
+
+plt.show()
+

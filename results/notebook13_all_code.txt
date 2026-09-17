@@ -1,0 +1,4522 @@
+
+================ CELL 1 ================
+# ============================================================
+
+# CELL 2: IMPORT LIBRARIES
+
+# ============================================================
+
+
+
+import os
+
+from pathlib import Path
+
+
+
+import numpy as np
+
+import pandas as pd
+
+import joblib
+
+
+
+from sklearn.ensemble import RandomForestClassifier
+
+
+
+from sklearn.model_selection import GroupKFold
+
+
+
+from sklearn.metrics import (
+
+    confusion_matrix,
+
+    accuracy_score,
+
+    precision_score,
+
+    recall_score,
+
+    f1_score,
+
+    balanced_accuracy_score
+
+)
+
+
+
+print("Libraries imported successfully.")
+
+================ CELL 2 ================
+# ============================================================
+
+# CELL 3: DEFINE PROJECT PATHS
+
+# ============================================================
+
+
+
+# Project root
+
+PROJECT_ROOT = Path(
+
+    r"C:\Users\Prajapati_Shivam\EEG-Seizure-Detection"
+
+)
+
+
+
+# Data directory
+
+DATA_DIR = PROJECT_ROOT / "data"
+
+
+
+# Feature and metadata files
+
+FEATURES_PATH = DATA_DIR / "features.csv"
+
+METADATA_PATH = DATA_DIR / "window_metadata.csv"
+
+
+
+print("=" * 60)
+
+print("PROJECT PATHS")
+
+print("=" * 60)
+
+
+
+print("\nProject Root:")
+
+print(PROJECT_ROOT)
+
+
+
+print("\nFeatures Path:")
+
+print(FEATURES_PATH)
+
+
+
+print("\nMetadata Path:")
+
+print(METADATA_PATH)
+
+
+
+
+
+# ============================================================
+
+# CHECK REQUIRED FILES
+
+# ============================================================
+
+
+
+print("\n" + "=" * 60)
+
+print("CHECKING REQUIRED FILES")
+
+print("=" * 60)
+
+
+
+if not FEATURES_PATH.exists():
+
+    raise FileNotFoundError(
+
+        f"features.csv not found at:\n{FEATURES_PATH}"
+
+    )
+
+
+
+if not METADATA_PATH.exists():
+
+    raise FileNotFoundError(
+
+        f"window_metadata.csv not found at:\n{METADATA_PATH}"
+
+    )
+
+
+
+print("\nFound: features.csv")
+
+print("Found: window_metadata.csv")
+
+
+
+print("\nAll required files found successfully.")
+
+
+
+
+
+# ============================================================
+
+# LOAD DATA
+
+# ============================================================
+
+
+
+print("\n" + "=" * 60)
+
+print("LOADING DATA")
+
+print("=" * 60)
+
+
+
+features_df = pd.read_csv(
+
+    FEATURES_PATH
+
+)
+
+
+
+metadata_df = pd.read_csv(
+
+    METADATA_PATH
+
+)
+
+
+
+print("\nFeature Dataset Shape:")
+
+print(features_df.shape)
+
+
+
+print("\nMetadata Shape:")
+
+print(metadata_df.shape)
+
+
+
+print("\nFeature Columns:")
+
+print(features_df.columns.tolist())
+
+
+
+print("\nMetadata Columns:")
+
+print(metadata_df.columns.tolist())
+
+================ CELL 3 ================
+# ============================================================
+
+# CELL 4: VERIFY DATA ALIGNMENT AND DEFINE RECORDING GROUPS
+
+# ============================================================
+
+
+
+print("=" * 60)
+
+print("VERIFYING DATA ALIGNMENT")
+
+print("=" * 60)
+
+
+
+# ------------------------------------------------------------
+
+# Check that the number of feature rows and metadata rows match
+
+# ------------------------------------------------------------
+
+
+
+if len(features_df) != len(metadata_df):
+
+    raise ValueError(
+
+        "Feature and metadata row counts do not match."
+
+    )
+
+
+
+print("\nSUCCESS: Feature and metadata row counts match.")
+
+
+
+# ------------------------------------------------------------
+
+# Check that labels match between both files
+
+# ------------------------------------------------------------
+
+
+
+feature_labels = features_df["Label"].to_numpy()
+
+
+
+metadata_labels = metadata_df["label"].to_numpy()
+
+
+
+if not np.array_equal(
+
+    feature_labels,
+
+    metadata_labels
+
+):
+
+    raise ValueError(
+
+        "Feature labels and metadata labels do not match."
+
+    )
+
+
+
+print(
+
+    "SUCCESS: Feature labels and metadata labels match."
+
+)
+
+
+
+# ------------------------------------------------------------
+
+# Define feature columns
+
+# ------------------------------------------------------------
+
+
+
+feature_columns = [
+
+    "Mean",
+
+    "Std",
+
+    "Variance",
+
+    "Delta",
+
+    "Theta",
+
+    "Alpha",
+
+    "Beta",
+
+    "Gamma"
+
+]
+
+
+
+# ------------------------------------------------------------
+
+# Create feature matrix and labels
+
+# ------------------------------------------------------------
+
+
+
+X = features_df[
+
+    feature_columns
+
+].copy()
+
+
+
+y = features_df[
+
+    "Label"
+
+].to_numpy()
+
+
+
+# Recording names are used as groups
+
+groups = metadata_df[
+
+    "file"
+
+].to_numpy()
+
+
+
+# ------------------------------------------------------------
+
+# Print dataset information
+
+# ------------------------------------------------------------
+
+
+
+print("\n" + "=" * 60)
+
+print("DATASET INFORMATION")
+
+print("=" * 60)
+
+
+
+print("\nFeature Matrix Shape:")
+
+print(X.shape)
+
+
+
+print("\nLabel Shape:")
+
+print(y.shape)
+
+
+
+print("\nNumber of unique recordings:")
+
+print(
+
+    len(
+
+        np.unique(groups)
+
+    )
+
+)
+
+
+
+print("\nUnique recordings:")
+
+
+
+for recording in sorted(
+
+    np.unique(groups)
+
+):
+
+    print(
+
+        " -",
+
+        recording
+
+    )
+
+
+
+# ------------------------------------------------------------
+
+# Class distribution
+
+# ------------------------------------------------------------
+
+
+
+print("\n" + "=" * 60)
+
+print("OVERALL CLASS DISTRIBUTION")
+
+print("=" * 60)
+
+
+
+class_distribution = (
+
+    pd.Series(y)
+
+    .value_counts()
+
+    .sort_index()
+
+)
+
+
+
+print(
+
+    class_distribution
+
+)
+
+
+
+print("\nClass labels:")
+
+print("0 = Normal")
+
+print("1 = Seizure")
+
+
+
+print("\nData alignment and recording groups verified successfully.")
+
+================ CELL 4 ================
+# ============================================================
+
+# CELL 5: RECORDING-LEVEL CLASS DISTRIBUTION
+
+# ============================================================
+
+
+
+print("=" * 60)
+
+print("RECORDING-LEVEL CLASS DISTRIBUTION")
+
+print("=" * 60)
+
+
+
+# Create a recording summary
+
+recording_summary = (
+
+    metadata_df
+
+    .groupby("file")
+
+    .agg(
+
+        total_windows=("label", "count"),
+
+
+
+        seizure_windows=(
+
+            "label",
+
+            "sum"
+
+        ),
+
+
+
+        normal_windows=(
+
+            "label",
+
+            lambda x: (x == 0).sum()
+
+        )
+
+    )
+
+    .reset_index()
+
+)
+
+
+
+# Determine whether recording contains seizure
+
+recording_summary[
+
+    "contains_seizure"
+
+] = (
+
+    recording_summary[
+
+        "seizure_windows"
+
+    ] > 0
+
+).astype(int)
+
+
+
+# Sort by recording name
+
+recording_summary = recording_summary.sort_values(
+
+    "file"
+
+).reset_index(drop=True)
+
+
+
+print("\nRecording Summary:")
+
+print(
+
+    recording_summary.to_string(
+
+        index=False
+
+    )
+
+)
+
+
+
+# ------------------------------------------------------------
+
+# Count seizure and normal recordings
+
+# ------------------------------------------------------------
+
+
+
+seizure_recording_count = (
+
+    recording_summary[
+
+        "contains_seizure"
+
+    ].sum()
+
+)
+
+
+
+normal_recording_count = (
+
+    len(recording_summary)
+
+    - seizure_recording_count
+
+)
+
+
+
+print("\n" + "=" * 60)
+
+print("RECORDING-LEVEL SUMMARY")
+
+print("=" * 60)
+
+
+
+print(
+
+    "Total recordings:",
+
+    len(recording_summary)
+
+)
+
+
+
+print(
+
+    "Seizure-containing recordings:",
+
+    seizure_recording_count
+
+)
+
+
+
+print(
+
+    "Normal-only recordings:",
+
+    normal_recording_count
+
+)
+
+
+
+# ------------------------------------------------------------
+
+# List recordings by class
+
+# ------------------------------------------------------------
+
+
+
+print("\nSeizure-containing recordings:")
+
+
+
+for recording in recording_summary[
+
+    recording_summary[
+
+        "contains_seizure"
+
+    ] == 1
+
+]["file"]:
+
+
+
+    print(
+
+        " -",
+
+        recording
+
+    )
+
+
+
+print("\nNormal-only recordings:")
+
+
+
+for recording in recording_summary[
+
+    recording_summary[
+
+        "contains_seizure"
+
+    ] == 0
+
+]["file"]:
+
+
+
+    print(
+
+        " -",
+
+        recording
+
+    )
+
+================ CELL 5 ================
+# ============================================================
+
+# CELL 6: CREATE RECORDING-LEVEL STRATIFICATION LABELS
+
+# ============================================================
+
+
+
+print("=" * 60)
+
+print("CREATING RECORDING-LEVEL STRATIFICATION LABELS")
+
+print("=" * 60)
+
+
+
+# ------------------------------------------------------------
+
+# Each recording receives one group-level label:
+
+#
+
+# 0 = Normal-only recording
+
+# 1 = Seizure-containing recording
+
+# ------------------------------------------------------------
+
+
+
+recording_labels = (
+
+    recording_summary[
+
+        [
+
+            "file",
+
+            "contains_seizure"
+
+        ]
+
+    ]
+
+    .copy()
+
+)
+
+
+
+print("\nRecording-Level Labels:")
+
+print(
+
+    recording_labels.to_string(
+
+        index=False
+
+    )
+
+)
+
+
+
+# ------------------------------------------------------------
+
+# Create mapping from recording name to recording-level label
+
+# ------------------------------------------------------------
+
+
+
+recording_label_map = dict(
+
+    zip(
+
+        recording_labels["file"],
+
+        recording_labels["contains_seizure"]
+
+    )
+
+)
+
+
+
+# ------------------------------------------------------------
+
+# Create group-level labels corresponding to every EEG window
+
+# ------------------------------------------------------------
+
+
+
+group_labels = np.array([
+
+    recording_label_map[
+
+        recording
+
+    ]
+
+    for recording in groups
+
+])
+
+
+
+# ------------------------------------------------------------
+
+# Verify dimensions
+
+# ------------------------------------------------------------
+
+
+
+print("\n" + "=" * 60)
+
+print("STRATIFICATION LABEL INFORMATION")
+
+print("=" * 60)
+
+
+
+print(
+
+    "\nNumber of window-level group labels:",
+
+    len(group_labels)
+
+)
+
+
+
+print(
+
+    "Number of recording groups:",
+
+    len(
+
+        np.unique(groups)
+
+    )
+
+)
+
+
+
+# ------------------------------------------------------------
+
+# Count recording-level labels
+
+# ------------------------------------------------------------
+
+
+
+print("\nRecording-Level Label Distribution:")
+
+
+
+print(
+
+    pd.Series(
+
+        recording_labels[
+
+            "contains_seizure"
+
+        ]
+
+    ).value_counts().sort_index()
+
+)
+
+
+
+print("\nLabel meaning:")
+
+print("0 = Normal-only recording")
+
+print("1 = Seizure-containing recording")
+
+
+
+print(
+
+    "\nRecording-level stratification labels "
+
+    "created successfully."
+
+)
+
+================ CELL 6 ================
+# ============================================================
+
+# CELL 7: CREATE STRATIFIED GROUP CROSS-VALIDATION
+
+# ============================================================
+
+
+
+from sklearn.model_selection import StratifiedGroupKFold
+
+
+
+
+
+print("=" * 60)
+
+print("CREATING STRATIFIED GROUP CROSS-VALIDATION")
+
+print("=" * 60)
+
+
+
+# ------------------------------------------------------------
+
+# Number of folds
+
+# ------------------------------------------------------------
+
+
+
+N_SPLITS = 5
+
+
+
+# ------------------------------------------------------------
+
+# Create StratifiedGroupKFold
+
+# ------------------------------------------------------------
+
+
+
+cv = StratifiedGroupKFold(
+
+    n_splits=N_SPLITS,
+
+    shuffle=True,
+
+    random_state=42
+
+)
+
+
+
+print(
+
+    "\nCross-validation strategy:"
+
+)
+
+
+
+print(
+
+    "Method: StratifiedGroupKFold"
+
+)
+
+
+
+print(
+
+    "Number of folds:",
+
+    N_SPLITS
+
+)
+
+
+
+print(
+
+    "Shuffle: True"
+
+)
+
+
+
+print(
+
+    "Random state:",
+
+    42
+
+)
+
+
+
+print(
+
+    "\nGrouping variable: EDF recording filename"
+
+)
+
+
+
+print(
+
+    "Stratification variable: "
+
+    "Recording seizure/normal status"
+
+)
+
+
+
+print(
+
+    "\nCross-validation object created successfully."
+
+)
+
+================ CELL 7 ================
+# ============================================================
+
+# CELL 8: INSPECT CROSS-VALIDATION FOLD ASSIGNMENTS
+
+# ============================================================
+
+
+
+print("=" * 60)
+
+print("INSPECTING CROSS-VALIDATION FOLD ASSIGNMENTS")
+
+print("=" * 60)
+
+
+
+# ------------------------------------------------------------
+
+# Create fold assignments
+
+# ------------------------------------------------------------
+
+
+
+fold_assignments = []
+
+
+
+for fold_number, (train_idx, test_idx) in enumerate(
+
+    cv.split(
+
+        X,
+
+        group_labels,
+
+        groups
+
+    ),
+
+    start=1
+
+):
+
+
+
+    train_recordings = sorted(
+
+        np.unique(
+
+            groups[train_idx]
+
+        )
+
+    )
+
+
+
+    test_recordings = sorted(
+
+        np.unique(
+
+            groups[test_idx]
+
+        )
+
+    )
+
+
+
+    # --------------------------------------------------------
+
+    # Check for recording overlap
+
+    # --------------------------------------------------------
+
+
+
+    overlap = set(
+
+        train_recordings
+
+    ).intersection(
+
+        test_recordings
+
+    )
+
+
+
+    # --------------------------------------------------------
+
+    # Count seizure-containing recordings
+
+    # --------------------------------------------------------
+
+
+
+    train_seizure_recordings = sum(
+
+        recording_label_map[
+
+            recording
+
+        ]
+
+        for recording in train_recordings
+
+    )
+
+
+
+    test_seizure_recordings = sum(
+
+        recording_label_map[
+
+            recording
+
+        ]
+
+        for recording in test_recordings
+
+    )
+
+
+
+    fold_assignments.append({
+
+
+
+        "fold":
+
+            fold_number,
+
+
+
+        "train_recordings":
+
+            train_recordings,
+
+
+
+        "test_recordings":
+
+            test_recordings,
+
+
+
+        "train_seizure_recordings":
+
+            train_seizure_recordings,
+
+
+
+        "test_seizure_recordings":
+
+            test_seizure_recordings,
+
+
+
+        "overlap":
+
+            overlap
+
+
+
+    })
+
+
+
+
+
+# ============================================================
+
+# PRINT FOLD INFORMATION
+
+# ============================================================
+
+
+
+for fold_info in fold_assignments:
+
+
+
+    print("\n" + "=" * 60)
+
+
+
+    print(
+
+        f"FOLD {fold_info['fold']}"
+
+    )
+
+
+
+    print("=" * 60)
+
+
+
+    print(
+
+        "\nTraining recordings:"
+
+    )
+
+
+
+    for recording in fold_info[
+
+        "train_recordings"
+
+    ]:
+
+
+
+        print(
+
+            " TRAIN:",
+
+            recording
+
+        )
+
+
+
+    print(
+
+        "\nTesting recordings:"
+
+    )
+
+
+
+    for recording in fold_info[
+
+        "test_recordings"
+
+    ]:
+
+
+
+        print(
+
+            " TEST:",
+
+            recording
+
+        )
+
+
+
+    print(
+
+        "\nTraining seizure-containing recordings:",
+
+        fold_info[
+
+            "train_seizure_recordings"
+
+        ]
+
+    )
+
+
+
+    print(
+
+        "Testing seizure-containing recordings:",
+
+        fold_info[
+
+            "test_seizure_recordings"
+
+        ]
+
+    )
+
+
+
+    print(
+
+        "\nOverlapping recordings:"
+
+    )
+
+
+
+    print(
+
+        fold_info[
+
+            "overlap"
+
+        ]
+
+    )
+
+
+
+
+
+# ============================================================
+
+# GLOBAL LEAKAGE CHECK
+
+# ============================================================
+
+
+
+print("\n" + "=" * 60)
+
+print("GLOBAL RECORDING LEAKAGE CHECK")
+
+print("=" * 60)
+
+
+
+leakage_detected = False
+
+
+
+for fold_info in fold_assignments:
+
+
+
+    if len(
+
+        fold_info["overlap"]
+
+    ) > 0:
+
+
+
+        leakage_detected = True
+
+
+
+        print(
+
+            "WARNING: Recording leakage detected "
+
+            f"in Fold {fold_info['fold']}"
+
+        )
+
+
+
+
+
+if leakage_detected:
+
+
+
+    raise ValueError(
+
+        "Recording leakage detected. "
+
+        "Cross-validation setup must be reviewed."
+
+    )
+
+
+
+else:
+
+
+
+    print(
+
+        "\nSUCCESS: No recording leakage detected "
+
+        "across any fold."
+
+    )
+
+================ CELL 8 ================
+# ============================================================
+
+# CELL 9: RECORDING-WISE CROSS-VALIDATION MODEL TRAINING
+
+# ============================================================
+
+
+
+print("=" * 60)
+
+print("RECORDING-WISE CROSS-VALIDATION")
+
+print("=" * 60)
+
+
+
+# ------------------------------------------------------------
+
+# Store results from each fold
+
+# ------------------------------------------------------------
+
+
+
+cv_results = []
+
+
+
+# ------------------------------------------------------------
+
+# Store all predictions for later analysis
+
+# ------------------------------------------------------------
+
+
+
+all_cv_predictions = []
+
+
+
+# ------------------------------------------------------------
+
+# Run cross-validation
+
+# ------------------------------------------------------------
+
+
+
+for fold_number, (train_idx, test_idx) in enumerate(
+
+    cv.split(
+
+        X,
+
+        group_labels,
+
+        groups
+
+    ),
+
+    start=1
+
+):
+
+
+
+    print("\n" + "=" * 60)
+
+    print(
+
+        f"FOLD {fold_number}"
+
+    )
+
+    print("=" * 60)
+
+
+
+    # --------------------------------------------------------
+
+    # Split data
+
+    # --------------------------------------------------------
+
+
+
+    X_train = X.iloc[
+
+        train_idx
+
+    ]
+
+
+
+    X_test = X.iloc[
+
+        test_idx
+
+    ]
+
+
+
+    y_train = y[
+
+        train_idx
+
+    ]
+
+
+
+    y_test = y[
+
+        test_idx
+
+    ]
+
+
+
+    groups_train = groups[
+
+        train_idx
+
+    ]
+
+
+
+    groups_test = groups[
+
+        test_idx
+
+    ]
+
+
+
+    # --------------------------------------------------------
+
+    # Print recording information
+
+    # --------------------------------------------------------
+
+
+
+    train_recordings = sorted(
+
+        np.unique(
+
+            groups_train
+
+        )
+
+    )
+
+
+
+    test_recordings = sorted(
+
+        np.unique(
+
+            groups_test
+
+        )
+
+    )
+
+
+
+    print(
+
+        "\nTraining recordings:",
+
+        len(train_recordings)
+
+    )
+
+
+
+    print(
+
+        "Testing recordings:",
+
+        len(test_recordings)
+
+    )
+
+
+
+    print(
+
+        "\nTesting recordings:"
+
+    )
+
+
+
+    for recording in test_recordings:
+
+
+
+        print(
+
+            " TEST:",
+
+            recording
+
+        )
+
+
+
+    # --------------------------------------------------------
+
+    # Print class distribution
+
+    # --------------------------------------------------------
+
+
+
+    print(
+
+        "\nTraining class distribution:"
+
+    )
+
+
+
+    print(
+
+        pd.Series(
+
+            y_train
+
+        ).value_counts().sort_index()
+
+    )
+
+
+
+    print(
+
+        "\nTesting class distribution:"
+
+    )
+
+
+
+    print(
+
+        pd.Series(
+
+            y_test
+
+        ).value_counts().sort_index()
+
+    )
+
+
+
+    # --------------------------------------------------------
+
+    # Train class-weighted Random Forest
+
+    # --------------------------------------------------------
+
+
+
+    print(
+
+        "\nTraining class-weighted Random Forest..."
+
+    )
+
+
+
+    model = RandomForestClassifier(
+
+        n_estimators=200,
+
+        class_weight="balanced",
+
+        random_state=42,
+
+        n_jobs=-1
+
+    )
+
+
+
+    model.fit(
+
+        X_train,
+
+        y_train
+
+    )
+
+
+
+    print(
+
+        "Model training completed."
+
+    )
+
+
+
+    # --------------------------------------------------------
+
+    # Generate probability predictions
+
+    # --------------------------------------------------------
+
+
+
+    y_probability = model.predict_proba(
+
+        X_test
+
+    )[:, 1]
+
+
+
+    # --------------------------------------------------------
+
+    # Use baseline threshold of 0.5
+
+    # --------------------------------------------------------
+
+
+
+    y_pred = (
+
+        y_probability >= 0.5
+
+    ).astype(int)
+
+
+
+    # --------------------------------------------------------
+
+    # Calculate confusion matrix
+
+    # --------------------------------------------------------
+
+
+
+    cm = confusion_matrix(
+
+        y_test,
+
+        y_pred,
+
+        labels=[0, 1]
+
+    )
+
+
+
+    tn, fp, fn, tp = cm.ravel()
+
+
+
+    # --------------------------------------------------------
+
+    # Calculate metrics
+
+    # --------------------------------------------------------
+
+
+
+    accuracy = accuracy_score(
+
+        y_test,
+
+        y_pred
+
+    )
+
+
+
+    precision = precision_score(
+
+        y_test,
+
+        y_pred,
+
+        zero_division=0
+
+    )
+
+
+
+    sensitivity = recall_score(
+
+        y_test,
+
+        y_pred,
+
+        zero_division=0
+
+    )
+
+
+
+    specificity = (
+
+        tn / (tn + fp)
+
+        if (tn + fp) > 0
+
+        else 0
+
+    )
+
+
+
+    f1 = f1_score(
+
+        y_test,
+
+        y_pred,
+
+        zero_division=0
+
+    )
+
+
+
+    balanced_accuracy = balanced_accuracy_score(
+
+        y_test,
+
+        y_pred
+
+    )
+
+
+
+    # --------------------------------------------------------
+
+    # Store fold results
+
+    # --------------------------------------------------------
+
+
+
+    cv_results.append({
+
+
+
+        "fold":
+
+            fold_number,
+
+
+
+        "test_recordings":
+
+            ", ".join(
+
+                test_recordings
+
+            ),
+
+
+
+        "accuracy":
+
+            accuracy,
+
+
+
+        "precision":
+
+            precision,
+
+
+
+        "sensitivity":
+
+            sensitivity,
+
+
+
+        "specificity":
+
+            specificity,
+
+
+
+        "f1_score":
+
+            f1,
+
+
+
+        "balanced_accuracy":
+
+            balanced_accuracy,
+
+
+
+        "TN":
+
+            tn,
+
+
+
+        "FP":
+
+            fp,
+
+
+
+        "FN":
+
+            fn,
+
+
+
+        "TP":
+
+            tp
+
+
+
+    })
+
+
+
+    # --------------------------------------------------------
+
+    # Store predictions
+
+    # --------------------------------------------------------
+
+
+
+    fold_predictions = pd.DataFrame({
+
+
+
+        "fold":
+
+            fold_number,
+
+
+
+        "file":
+
+            groups_test,
+
+
+
+        "true_label":
+
+            y_test,
+
+
+
+        "seizure_probability":
+
+            y_probability,
+
+
+
+        "predicted_label":
+
+            y_pred
+
+
+
+    })
+
+
+
+    all_cv_predictions.append(
+
+        fold_predictions
+
+    )
+
+
+
+    # --------------------------------------------------------
+
+    # Print fold results
+
+    # --------------------------------------------------------
+
+
+
+    print(
+
+        "\nConfusion Matrix:"
+
+    )
+
+
+
+    print(
+
+        cm
+
+    )
+
+
+
+    print(
+
+        "\nFold Metrics:"
+
+    )
+
+
+
+    print(
+
+        f"Accuracy:           {accuracy:.4f}"
+
+    )
+
+
+
+    print(
+
+        f"Precision:          {precision:.4f}"
+
+    )
+
+
+
+    print(
+
+        f"Sensitivity/Recall: {sensitivity:.4f}"
+
+    )
+
+
+
+    print(
+
+        f"Specificity:        {specificity:.4f}"
+
+    )
+
+
+
+    print(
+
+        f"F1-Score:           {f1:.4f}"
+
+    )
+
+
+
+    print(
+
+        f"Balanced Accuracy:  {balanced_accuracy:.4f}"
+
+    )
+
+
+
+
+
+# ============================================================
+
+# COMBINE ALL FOLD RESULTS
+
+# ============================================================
+
+
+
+cv_results_df = pd.DataFrame(
+
+    cv_results
+
+)
+
+
+
+all_cv_predictions_df = pd.concat(
+
+    all_cv_predictions,
+
+    ignore_index=True
+
+)
+
+
+
+print("\n" + "=" * 60)
+
+print("CROSS-VALIDATION COMPLETED")
+
+print("=" * 60)
+
+
+
+print(
+
+    "\nFold-level results:"
+
+)
+
+
+
+print(
+
+    cv_results_df.to_string(
+
+        index=False
+
+    )
+
+)
+
+
+
+print(
+
+    "\nTotal cross-validation predictions:"
+
+)
+
+
+
+print(
+
+    len(
+
+        all_cv_predictions_df
+
+    )
+
+)
+
+================ CELL 9 ================
+# ============================================================
+
+# CELL 10: CROSS-VALIDATION SUMMARY
+
+# ============================================================
+
+
+
+print("=" * 60)
+
+print("CROSS-VALIDATION PERFORMANCE SUMMARY")
+
+print("=" * 60)
+
+
+
+# ------------------------------------------------------------
+
+# Metrics for all folds
+
+# ------------------------------------------------------------
+
+
+
+all_fold_metrics = [
+
+    "accuracy",
+
+    "specificity",
+
+    "balanced_accuracy"
+
+]
+
+
+
+print("\n" + "=" * 60)
+
+print("ALL-FOLD PERFORMANCE")
+
+print("=" * 60)
+
+
+
+for metric in all_fold_metrics:
+
+
+
+    mean_value = cv_results_df[
+
+        metric
+
+    ].mean()
+
+
+
+    std_value = cv_results_df[
+
+        metric
+
+    ].std(
+
+        ddof=1
+
+    )
+
+
+
+    print(
+
+        f"{metric}: "
+
+        f"{mean_value:.4f} "
+
+        f"+/- "
+
+        f"{std_value:.4f}"
+
+    )
+
+
+
+
+
+# ------------------------------------------------------------
+
+# Identify folds containing seizure windows
+
+# ------------------------------------------------------------
+
+
+
+seizure_folds = cv_results_df[
+
+    (
+
+        cv_results_df["TP"]
+
+        + cv_results_df["FN"]
+
+    ) > 0
+
+].copy()
+
+
+
+print("\n" + "=" * 60)
+
+print("SEIZURE-CONTAINING FOLDS")
+
+print("=" * 60)
+
+
+
+print(
+
+    "Number of seizure-containing folds:",
+
+    len(
+
+        seizure_folds
+
+    )
+
+)
+
+
+
+print(
+
+    seizure_folds[
+
+        [
+
+            "fold",
+
+            "sensitivity",
+
+            "precision",
+
+            "f1_score",
+
+            "balanced_accuracy"
+
+        ]
+
+    ].to_string(
+
+        index=False
+
+    )
+
+)
+
+
+
+
+
+# ------------------------------------------------------------
+
+# Calculate seizure-containing fold statistics
+
+# ------------------------------------------------------------
+
+
+
+seizure_metrics = [
+
+    "sensitivity",
+
+    "precision",
+
+    "f1_score",
+
+    "balanced_accuracy"
+
+]
+
+
+
+print("\n" + "=" * 60)
+
+print(
+
+    "PERFORMANCE ON SEIZURE-CONTAINING FOLDS"
+
+)
+
+print("=" * 60)
+
+
+
+for metric in seizure_metrics:
+
+
+
+    mean_value = seizure_folds[
+
+        metric
+
+    ].mean()
+
+
+
+    std_value = seizure_folds[
+
+        metric
+
+    ].std(
+
+        ddof=1
+
+    )
+
+
+
+    print(
+
+        f"{metric}: "
+
+        f"{mean_value:.4f} "
+
+        f"+/- "
+
+        f"{std_value:.4f}"
+
+    )
+
+
+
+
+
+# ------------------------------------------------------------
+
+# Calculate pooled confusion matrix
+
+# ------------------------------------------------------------
+
+
+
+total_tn = cv_results_df[
+
+    "TN"
+
+].sum()
+
+
+
+total_fp = cv_results_df[
+
+    "FP"
+
+].sum()
+
+
+
+total_fn = cv_results_df[
+
+    "FN"
+
+].sum()
+
+
+
+total_tp = cv_results_df[
+
+    "TP"
+
+].sum()
+
+
+
+
+
+print("\n" + "=" * 60)
+
+print("POOLED CROSS-VALIDATION CONFUSION MATRIX")
+
+print("=" * 60)
+
+
+
+print(
+
+    "\nTrue Negatives:",
+
+    total_tn
+
+)
+
+
+
+print(
+
+    "False Positives:",
+
+    total_fp
+
+)
+
+
+
+print(
+
+    "False Negatives:",
+
+    total_fn
+
+)
+
+
+
+print(
+
+    "True Positives:",
+
+    total_tp
+
+)
+
+
+
+
+
+# ------------------------------------------------------------
+
+# Calculate pooled metrics
+
+# ------------------------------------------------------------
+
+
+
+pooled_accuracy = (
+
+    total_tn + total_tp
+
+) / (
+
+    total_tn
+
+    + total_fp
+
+    + total_fn
+
+    + total_tp
+
+)
+
+
+
+pooled_precision = (
+
+    total_tp
+
+    / (
+
+        total_tp
+
+        + total_fp
+
+    )
+
+    if (
+
+        total_tp
+
+        + total_fp
+
+    ) > 0
+
+    else 0
+
+)
+
+
+
+pooled_sensitivity = (
+
+    total_tp
+
+    / (
+
+        total_tp
+
+        + total_fn
+
+    )
+
+    if (
+
+        total_tp
+
+        + total_fn
+
+    ) > 0
+
+    else 0
+
+)
+
+
+
+pooled_specificity = (
+
+    total_tn
+
+    / (
+
+        total_tn
+
+        + total_fp
+
+    )
+
+    if (
+
+        total_tn
+
+        + total_fp
+
+    ) > 0
+
+    else 0
+
+)
+
+
+
+pooled_f1 = (
+
+    2
+
+    * pooled_precision
+
+    * pooled_sensitivity
+
+    / (
+
+        pooled_precision
+
+        + pooled_sensitivity
+
+    )
+
+    if (
+
+        pooled_precision
+
+        + pooled_sensitivity
+
+    ) > 0
+
+    else 0
+
+)
+
+
+
+pooled_balanced_accuracy = (
+
+    pooled_sensitivity
+
+    + pooled_specificity
+
+) / 2
+
+
+
+
+
+print("\n" + "=" * 60)
+
+print(
+
+    "POOLED CROSS-VALIDATION METRICS"
+
+)
+
+print("=" * 60)
+
+
+
+print(
+
+    f"\nAccuracy:           "
+
+    f"{pooled_accuracy:.4f}"
+
+)
+
+
+
+print(
+
+    f"Precision:          "
+
+    f"{pooled_precision:.4f}"
+
+)
+
+
+
+print(
+
+    f"Sensitivity/Recall: "
+
+    f"{pooled_sensitivity:.4f}"
+
+)
+
+
+
+print(
+
+    f"Specificity:        "
+
+    f"{pooled_specificity:.4f}"
+
+)
+
+
+
+print(
+
+    f"F1-Score:           "
+
+    f"{pooled_f1:.4f}"
+
+)
+
+
+
+print(
+
+    f"Balanced Accuracy:  "
+
+    f"{pooled_balanced_accuracy:.4f}"
+
+)
+
+================ CELL 10 ================
+# ============================================================
+
+# CELL 11: CROSS-VALIDATION THRESHOLD ANALYSIS
+
+# ============================================================
+
+
+
+print("=" * 60)
+
+print("CROSS-VALIDATION THRESHOLD ANALYSIS")
+
+print("=" * 60)
+
+
+
+# ------------------------------------------------------------
+
+# Define thresholds
+
+# ------------------------------------------------------------
+
+
+
+thresholds = [
+
+    0.50,
+
+    0.10
+
+]
+
+
+
+threshold_results = []
+
+
+
+# ------------------------------------------------------------
+
+# Evaluate each threshold
+
+# ------------------------------------------------------------
+
+
+
+for threshold in thresholds:
+
+
+
+    print("\n" + "=" * 60)
+
+
+
+    print(
+
+        f"THRESHOLD: {threshold:.2f}"
+
+    )
+
+
+
+    print("=" * 60)
+
+
+
+    # --------------------------------------------------------
+
+    # Generate predictions
+
+    # --------------------------------------------------------
+
+
+
+    y_true_cv = (
+
+        all_cv_predictions_df[
+
+            "true_label"
+
+        ].to_numpy()
+
+    )
+
+
+
+    y_probability_cv = (
+
+        all_cv_predictions_df[
+
+            "seizure_probability"
+
+        ].to_numpy()
+
+    )
+
+
+
+    y_pred_cv = (
+
+        y_probability_cv >= threshold
+
+    ).astype(int)
+
+
+
+    # --------------------------------------------------------
+
+    # Confusion matrix
+
+    # --------------------------------------------------------
+
+
+
+    cm = confusion_matrix(
+
+        y_true_cv,
+
+        y_pred_cv,
+
+        labels=[0, 1]
+
+    )
+
+
+
+    tn, fp, fn, tp = cm.ravel()
+
+
+
+    # --------------------------------------------------------
+
+    # Metrics
+
+    # --------------------------------------------------------
+
+
+
+    accuracy = accuracy_score(
+
+        y_true_cv,
+
+        y_pred_cv
+
+    )
+
+
+
+    precision = precision_score(
+
+        y_true_cv,
+
+        y_pred_cv,
+
+        zero_division=0
+
+    )
+
+
+
+    sensitivity = recall_score(
+
+        y_true_cv,
+
+        y_pred_cv,
+
+        zero_division=0
+
+    )
+
+
+
+    specificity = (
+
+        tn / (tn + fp)
+
+        if (tn + fp) > 0
+
+        else 0
+
+    )
+
+
+
+    f1 = f1_score(
+
+        y_true_cv,
+
+        y_pred_cv,
+
+        zero_division=0
+
+    )
+
+
+
+    balanced_accuracy = (
+
+        balanced_accuracy_score(
+
+            y_true_cv,
+
+            y_pred_cv
+
+        )
+
+    )
+
+
+
+    # --------------------------------------------------------
+
+    # Store results
+
+    # --------------------------------------------------------
+
+
+
+    threshold_results.append({
+
+
+
+        "threshold":
+
+            threshold,
+
+
+
+        "accuracy":
+
+            accuracy,
+
+
+
+        "precision":
+
+            precision,
+
+
+
+        "sensitivity":
+
+            sensitivity,
+
+
+
+        "specificity":
+
+            specificity,
+
+
+
+        "f1_score":
+
+            f1,
+
+
+
+        "balanced_accuracy":
+
+            balanced_accuracy,
+
+
+
+        "TN":
+
+            tn,
+
+
+
+        "FP":
+
+            fp,
+
+
+
+        "FN":
+
+            fn,
+
+
+
+        "TP":
+
+            tp
+
+
+
+    })
+
+
+
+    # --------------------------------------------------------
+
+    # Print results
+
+    # --------------------------------------------------------
+
+
+
+    print(
+
+        "\nConfusion Matrix:"
+
+    )
+
+
+
+    print(
+
+        cm
+
+    )
+
+
+
+    print(
+
+        "\nConfusion Matrix Components:"
+
+    )
+
+
+
+    print(
+
+        "True Negatives :",
+
+        tn
+
+    )
+
+
+
+    print(
+
+        "False Positives:",
+
+        fp
+
+    )
+
+
+
+    print(
+
+        "False Negatives:",
+
+        fn
+
+    )
+
+
+
+    print(
+
+        "True Positives :",
+
+        tp
+
+    )
+
+
+
+    print(
+
+        "\nMetrics:"
+
+    )
+
+
+
+    print(
+
+        f"Accuracy:           {accuracy:.4f}"
+
+    )
+
+
+
+    print(
+
+        f"Precision:          {precision:.4f}"
+
+    )
+
+
+
+    print(
+
+        f"Sensitivity/Recall: {sensitivity:.4f}"
+
+    )
+
+
+
+    print(
+
+        f"Specificity:        {specificity:.4f}"
+
+    )
+
+
+
+    print(
+
+        f"F1-Score:           {f1:.4f}"
+
+    )
+
+
+
+    print(
+
+        f"Balanced Accuracy:  {balanced_accuracy:.4f}"
+
+    )
+
+
+
+
+
+# ============================================================
+
+# CREATE COMPARISON TABLE
+
+# ============================================================
+
+
+
+threshold_results_df = pd.DataFrame(
+
+    threshold_results
+
+)
+
+
+
+print("\n" + "=" * 60)
+
+print("CROSS-VALIDATION THRESHOLD COMPARISON")
+
+print("=" * 60)
+
+
+
+print(
+
+    threshold_results_df.to_string(
+
+        index=False
+
+    )
+
+)
+
+================ CELL 11 ================
+# ============================================================
+
+# CELL 12: CONSOLIDATED EXPERIMENT COMPARISON
+
+# ============================================================
+
+
+
+print("=" * 60)
+
+print("CONSOLIDATED EXPERIMENT COMPARISON")
+
+print("=" * 60)
+
+
+
+# ------------------------------------------------------------
+
+# Create comparison table
+
+# ------------------------------------------------------------
+
+
+
+experiment_comparison = pd.DataFrame({
+
+
+
+    "Experiment": [
+
+        "Experiment 03",
+
+        "Experiment 04",
+
+        "Experiment 05",
+
+        "Experiment 06 - Threshold 0.50",
+
+        "Experiment 06 - Threshold 0.10"
+
+    ],
+
+
+
+    "Evaluation": [
+
+        "Recording-wise holdout",
+
+        "Recording-wise holdout",
+
+        "Recording/event-level holdout",
+
+        "5-fold recording-wise CV",
+
+        "5-fold recording-wise CV"
+
+    ],
+
+
+
+    "Threshold": [
+
+        0.50,
+
+        0.10,
+
+        0.10,
+
+        0.50,
+
+        0.10
+
+    ],
+
+
+
+    "Accuracy": [
+
+        0.9873,
+
+        0.9897,
+
+        0.6000,
+
+        0.9948,
+
+        0.9927
+
+    ],
+
+
+
+    "Precision": [
+
+        0.8333,
+
+        0.6562,
+
+        0.6000,
+
+        0.7619,
+
+        0.5175
+
+    ],
+
+
+
+    "Sensitivity": [
+
+        0.3425,
+
+        0.8630,
+
+        1.0000,
+
+        0.4752,
+
+        0.7327
+
+    ],
+
+
+
+    "Specificity": [
+
+        0.9988,
+
+        0.9920,
+
+        0.0000,
+
+        0.9989,
+
+        0.9947
+
+    ],
+
+
+
+    "F1_Score": [
+
+        0.4854,
+
+        0.7456,
+
+        0.7500,
+
+        0.5854,
+
+        0.6066
+
+    ],
+
+
+
+    "Balanced_Accuracy": [
+
+        0.6706,
+
+        0.9275,
+
+        None,
+
+        0.7371,
+
+        0.8637
+
+    ]
+
+})
+
+
+
+
+
+# ============================================================
+
+# DISPLAY COMPARISON TABLE
+
+# ============================================================
+
+
+
+print("\n" + "=" * 60)
+
+print("EXPERIMENT PERFORMANCE COMPARISON")
+
+print("=" * 60)
+
+
+
+print(
+
+    experiment_comparison.to_string(
+
+        index=False
+
+    )
+
+)
+
+
+
+
+
+# ============================================================
+
+# SAVE COMPARISON TABLE
+
+# ============================================================
+
+
+
+comparison_output_path = (
+
+    PROJECT_ROOT
+
+    / "results"
+
+    / "experiment_comparison_summary.csv"
+
+)
+
+
+
+experiment_comparison.to_csv(
+
+    comparison_output_path,
+
+    index=False
+
+)
+
+
+
+print(
+
+    "\nComparison table saved to:"
+
+)
+
+
+
+print(
+
+    comparison_output_path
+
+)
+
+
+
+
+
+# ============================================================
+
+# IDENTIFY BEST CROSS-VALIDATION THRESHOLD
+
+# ============================================================
+
+
+
+best_cv_threshold = threshold_results_df.loc[
+
+    threshold_results_df[
+
+        "balanced_accuracy"
+
+    ].idxmax()
+
+]
+
+
+
+print("\n" + "=" * 60)
+
+print("BEST CROSS-VALIDATION THRESHOLD")
+
+print("=" * 60)
+
+
+
+print(
+
+    f"\nThreshold: "
+
+    f"{best_cv_threshold['threshold']:.2f}"
+
+)
+
+
+
+print(
+
+    f"Balanced Accuracy: "
+
+    f"{best_cv_threshold['balanced_accuracy']:.4f}"
+
+)
+
+
+
+print(
+
+    f"Sensitivity: "
+
+    f"{best_cv_threshold['sensitivity']:.4f}"
+
+)
+
+
+
+print(
+
+    f"Specificity: "
+
+    f"{best_cv_threshold['specificity']:.4f}"
+
+)
+
+
+
+print(
+
+    f"F1-Score: "
+
+    f"{best_cv_threshold['f1_score']:.4f}"
+
+)
+
+
+
+print(
+
+    "\nConsolidated experiment comparison completed."
+
+)
+
+================ CELL 12 ================
+# ============================================================
+
+# CELL 13: GENERATE FINAL EXPERIMENT 06 REPORT
+
+# ============================================================
+
+
+
+print("=" * 60)
+
+print("GENERATING FINAL EXPERIMENT 06 REPORT")
+
+print("=" * 60)
+
+
+
+# ------------------------------------------------------------
+
+# Report path
+
+# ------------------------------------------------------------
+
+
+
+report_path = (
+
+    PROJECT_ROOT
+
+    / "results"
+
+    / "experiment_06_cross_validation_report.txt"
+
+)
+
+
+
+# ------------------------------------------------------------
+
+# Extract threshold results
+
+# ------------------------------------------------------------
+
+
+
+threshold_05 = threshold_results_df[
+
+    threshold_results_df["threshold"] == 0.50
+
+].iloc[0]
+
+
+
+threshold_01 = threshold_results_df[
+
+    threshold_results_df["threshold"] == 0.10
+
+].iloc[0]
+
+
+
+# ------------------------------------------------------------
+
+# Extract CV summary values
+
+# ------------------------------------------------------------
+
+
+
+accuracy_mean = cv_results_df["accuracy"].mean()
+
+accuracy_std = cv_results_df["accuracy"].std()
+
+
+
+specificity_mean = cv_results_df["specificity"].mean()
+
+specificity_std = cv_results_df["specificity"].std()
+
+
+
+balanced_mean = cv_results_df["balanced_accuracy"].mean()
+
+balanced_std = cv_results_df["balanced_accuracy"].std()
+
+
+
+seizure_sensitivity_mean = seizure_folds[
+
+    "sensitivity"
+
+].mean()
+
+
+
+seizure_sensitivity_std = seizure_folds[
+
+    "sensitivity"
+
+].std()
+
+
+
+seizure_precision_mean = seizure_folds[
+
+    "precision"
+
+].mean()
+
+
+
+seizure_precision_std = seizure_folds[
+
+    "precision"
+
+].std()
+
+
+
+seizure_f1_mean = seizure_folds[
+
+    "f1_score"
+
+].mean()
+
+
+
+seizure_f1_std = seizure_folds[
+
+    "f1_score"
+
+].std()
+
+
+
+seizure_balanced_mean = seizure_folds[
+
+    "balanced_accuracy"
+
+].mean()
+
+
+
+seizure_balanced_std = seizure_folds[
+
+    "balanced_accuracy"
+
+].std()
+
+
+
+
+
+# ============================================================
+
+# BUILD REPORT
+
+# ============================================================
+
+
+
+report = f"""
+
+============================================================
+
+EXPERIMENT 06: RECORDING-WISE STRATIFIED CROSS-VALIDATION
+
+============================================================
+
+
+
+Objective
+
+------------------------------------------------------------
+
+
+
+This experiment evaluates the generalization performance of a
+
+class-weighted Random Forest EEG seizure detection model using
+
+recording-wise stratified cross-validation.
+
+
+
+The purpose of this experiment is to determine whether the
+
+model can detect seizure-related EEG windows in recordings
+
+that were not used during model training.
+
+
+
+Unlike random window-level splitting, recording-wise
+
+cross-validation ensures that windows originating from the
+
+same EEG recording are not simultaneously present in the
+
+training and testing sets.
+
+
+
+This experiment is part of a research and learning prototype
+
+and is not a clinically validated diagnostic system.
+
+
+
+
+
+============================================================
+
+DATASET INFORMATION
+
+============================================================
+
+
+
+Total EEG recordings: 15
+
+
+
+Seizure-containing recordings: 6
+
+
+
+Normal-only recordings: 9
+
+
+
+Total EEG windows: 13,181
+
+
+
+Normal windows: 13,080
+
+
+
+Seizure windows: 101
+
+
+
+Feature count: 8
+
+
+
+Features:
+
+Mean
+
+Std
+
+Variance
+
+Delta
+
+Theta
+
+Alpha
+
+Beta
+
+Gamma
+
+
+
+
+
+============================================================
+
+CROSS-VALIDATION METHODOLOGY
+
+============================================================
+
+
+
+Cross-validation method:
+
+StratifiedGroupKFold
+
+
+
+Number of folds: 5
+
+
+
+Random state: 42
+
+
+
+Grouping variable:
+
+EEG recording filename
+
+
+
+Stratification variable:
+
+Recording-level seizure/normal status
+
+
+
+The grouping strategy ensures that windows from the same EEG
+
+recording are never distributed between training and testing
+
+sets within the same fold.
+
+
+
+Recording leakage checks confirmed that no recording appeared
+
+simultaneously in the training and testing sets of any fold.
+
+
+
+
+
+============================================================
+
+FOLD-LEVEL RESULTS
+
+============================================================
+
+
+
+"""
+
+
+
+# ------------------------------------------------------------
+
+# Add fold-level results
+
+# ------------------------------------------------------------
+
+
+
+for _, row in cv_results_df.iterrows():
+
+
+
+    report += f"""
+
+Fold {int(row['fold'])}
+
+------------------------------------------------------------
+
+
+
+Testing recordings:
+
+{row['test_recordings']}
+
+
+
+Accuracy:           {row['accuracy']:.4f}
+
+Precision:          {row['precision']:.4f}
+
+Sensitivity/Recall: {row['sensitivity']:.4f}
+
+Specificity:        {row['specificity']:.4f}
+
+F1-Score:           {row['f1_score']:.4f}
+
+Balanced Accuracy:  {row['balanced_accuracy']:.4f}
+
+
+
+Confusion Matrix Components:
+
+
+
+TN: {int(row['TN'])}
+
+FP: {int(row['FP'])}
+
+FN: {int(row['FN'])}
+
+TP: {int(row['TP'])}
+
+
+
+"""
+
+
+
+
+
+report += f"""
+
+============================================================
+
+ALL-FOLD CROSS-VALIDATION SUMMARY
+
+============================================================
+
+
+
+Mean Accuracy:
+
+{accuracy_mean:.4f} +/- {accuracy_std:.4f}
+
+
+
+Mean Specificity:
+
+{specificity_mean:.4f} +/- {specificity_std:.4f}
+
+
+
+Mean Balanced Accuracy:
+
+{balanced_mean:.4f} +/- {balanced_std:.4f}
+
+
+
+
+
+============================================================
+
+SEIZURE-CONTAINING FOLD SUMMARY
+
+============================================================
+
+
+
+Number of folds containing seizure windows:
+
+{len(seizure_folds)}
+
+
+
+Sensitivity:
+
+{seizure_sensitivity_mean:.4f} +/- {seizure_sensitivity_std:.4f}
+
+
+
+Precision:
+
+{seizure_precision_mean:.4f} +/- {seizure_precision_std:.4f}
+
+
+
+F1-Score:
+
+{seizure_f1_mean:.4f} +/- {seizure_f1_std:.4f}
+
+
+
+Balanced Accuracy:
+
+{seizure_balanced_mean:.4f} +/- {seizure_balanced_std:.4f}
+
+
+
+
+
+============================================================
+
+POOLED CROSS-VALIDATION RESULTS
+
+============================================================
+
+
+
+Pooled Confusion Matrix Components:
+
+
+
+True Negatives:
+
+{int(total_tn)}
+
+
+
+False Positives:
+
+{int(total_fp)}
+
+
+
+False Negatives:
+
+{int(total_fn)}
+
+
+
+True Positives:
+
+{int(total_tp)}
+
+
+
+Pooled Accuracy:
+
+{pooled_accuracy:.4f}
+
+
+
+Pooled Precision:
+
+{pooled_precision:.4f}
+
+
+
+Pooled Sensitivity/Recall:
+
+{pooled_sensitivity:.4f}
+
+
+
+Pooled Specificity:
+
+{pooled_specificity:.4f}
+
+
+
+Pooled F1-Score:
+
+{pooled_f1:.4f}
+
+
+
+Pooled Balanced Accuracy:
+
+{pooled_balanced_accuracy:.4f}
+
+
+
+
+
+============================================================
+
+CROSS-VALIDATION THRESHOLD ANALYSIS
+
+============================================================
+
+
+
+Two decision thresholds were evaluated using out-of-fold
+
+probability predictions.
+
+
+
+Threshold 0.50:
+
+------------------------------------------------------------
+
+
+
+Accuracy:
+
+{threshold_05['accuracy']:.4f}
+
+
+
+Precision:
+
+{threshold_05['precision']:.4f}
+
+
+
+Sensitivity:
+
+{threshold_05['sensitivity']:.4f}
+
+
+
+Specificity:
+
+{threshold_05['specificity']:.4f}
+
+
+
+F1-Score:
+
+{threshold_05['f1_score']:.4f}
+
+
+
+Balanced Accuracy:
+
+{threshold_05['balanced_accuracy']:.4f}
+
+
+
+TN: {int(threshold_05['TN'])}
+
+FP: {int(threshold_05['FP'])}
+
+FN: {int(threshold_05['FN'])}
+
+TP: {int(threshold_05['TP'])}
+
+
+
+
+
+Threshold 0.10:
+
+------------------------------------------------------------
+
+
+
+Accuracy:
+
+{threshold_01['accuracy']:.4f}
+
+
+
+Precision:
+
+{threshold_01['precision']:.4f}
+
+
+
+Sensitivity:
+
+{threshold_01['sensitivity']:.4f}
+
+
+
+Specificity:
+
+{threshold_01['specificity']:.4f}
+
+
+
+F1-Score:
+
+{threshold_01['f1_score']:.4f}
+
+
+
+Balanced Accuracy:
+
+{threshold_01['balanced_accuracy']:.4f}
+
+
+
+TN: {int(threshold_01['TN'])}
+
+FP: {int(threshold_01['FP'])}
+
+FN: {int(threshold_01['FN'])}
+
+TP: {int(threshold_01['TP'])}
+
+
+
+
+
+============================================================
+
+THRESHOLD INTERPRETATION
+
+============================================================
+
+
+
+The threshold of 0.10 improved seizure sensitivity compared
+
+with the default threshold of 0.50.
+
+
+
+Sensitivity increased from:
+
+
+
+{threshold_05['sensitivity']:.4f}
+
+
+
+to:
+
+
+
+{threshold_01['sensitivity']:.4f}
+
+
+
+The number of correctly detected seizure windows increased
+
+from:
+
+
+
+{int(threshold_05['TP'])}
+
+
+
+to:
+
+
+
+{int(threshold_01['TP'])}
+
+
+
+The number of missed seizure windows decreased from:
+
+
+
+{int(threshold_05['FN'])}
+
+
+
+to:
+
+
+
+{int(threshold_01['FN'])}
+
+
+
+However, the lower threshold also increased false-positive
+
+predictions from:
+
+
+
+{int(threshold_05['FP'])}
+
+
+
+to:
+
+
+
+{int(threshold_01['FP'])}
+
+
+
+Precision decreased from:
+
+
+
+{threshold_05['precision']:.4f}
+
+
+
+to:
+
+
+
+{threshold_01['precision']:.4f}
+
+
+
+Therefore, lowering the threshold improves seizure sensitivity
+
+at the cost of increased false-positive predictions.
+
+
+
+Among the evaluated thresholds, 0.10 provided the stronger
+
+exploratory trade-off based on sensitivity, F1-score, and
+
+balanced accuracy.
+
+
+
+
+
+============================================================
+
+RESEARCH INTERPRETATION
+
+============================================================
+
+
+
+The class-weighted Random Forest demonstrated strong
+
+specificity across unseen recordings.
+
+
+
+However, seizure sensitivity varied substantially between
+
+cross-validation folds.
+
+
+
+This indicates that model performance is influenced by
+
+recording-to-recording variability.
+
+
+
+The pooled cross-validation sensitivity at the default
+
+threshold of 0.50 was:
+
+
+
+{pooled_sensitivity:.4f}
+
+
+
+When the threshold was reduced to 0.10 using out-of-fold
+
+predictions, pooled sensitivity increased to:
+
+
+
+{threshold_01['sensitivity']:.4f}
+
+
+
+The corresponding balanced accuracy increased from:
+
+
+
+{pooled_balanced_accuracy:.4f}
+
+
+
+to:
+
+
+
+{threshold_01['balanced_accuracy']:.4f}
+
+
+
+These results suggest that threshold adjustment may improve
+
+seizure detection sensitivity in this prototype.
+
+
+
+However, the increase in sensitivity was accompanied by a
+
+reduction in precision and an increase in false-positive
+
+predictions.
+
+
+
+
+
+============================================================
+
+IMPORTANT METHODOLOGICAL LIMITATION
+
+============================================================
+
+
+
+The threshold of 0.10 was originally identified during the
+
+exploratory threshold analysis in Experiment 04.
+
+
+
+It was subsequently evaluated on out-of-fold predictions from
+
+recording-wise cross-validation.
+
+
+
+Therefore, the threshold comparison provides useful evidence
+
+about generalization but should not be interpreted as a fully
+
+nested threshold-optimization experiment.
+
+
+
+For a more rigorous final evaluation, threshold selection
+
+should be performed inside the training portion of each
+
+cross-validation fold using a separate validation subset.
+
+
+
+The final test recordings should remain completely untouched
+
+until final evaluation.
+
+
+
+
+
+============================================================
+
+EXPERIMENT LIMITATIONS
+
+============================================================
+
+
+
+1. The dataset contains only 15 EEG recordings.
+
+
+
+2. Only 6 recordings contain seizure activity.
+
+
+
+3. The number of seizure windows is substantially smaller than
+
+   the number of normal windows.
+
+
+
+4. Recording-to-recording variability affects seizure
+
+   detection sensitivity.
+
+
+
+5. The current model uses relatively simple statistical and
+
+   frequency-domain features.
+
+
+
+6. The current evaluation is window-based and does not fully
+
+   represent real-time seizure event detection.
+
+
+
+7. Threshold 0.10 was not selected using nested cross-validation.
+
+
+
+8. The system has not been clinically validated.
+
+
+
+
+
+============================================================
+
+CONCLUSION
+
+============================================================
+
+
+
+Recording-wise stratified cross-validation demonstrated that
+
+the class-weighted Random Forest model can generalize to
+
+previously unseen EEG recordings, but seizure detection
+
+performance varies between recordings.
+
+
+
+The model maintained very high specificity, indicating a low
+
+false-positive rate at the default threshold.
+
+
+
+Reducing the classification threshold from 0.50 to 0.10
+
+substantially improved pooled seizure sensitivity from
+
+47.52% to 73.27%.
+
+
+
+Balanced accuracy also improved from 73.71% to 86.37%.
+
+
+
+However, this improvement was accompanied by a reduction in
+
+precision and an increase in false-positive predictions.
+
+
+
+The results support threshold adjustment as a potentially
+
+useful strategy for improving seizure sensitivity in this
+
+research prototype.
+
+
+
+Further work should investigate nested threshold optimization,
+
+larger multi-patient datasets, patient-independent evaluation,
+
+and event-level seizure detection.
+
+
+
+
+
+============================================================
+
+EXPERIMENT 06 COMPLETED
+
+============================================================
+
+"""
+
+
+
+# ============================================================
+
+# SAVE REPORT
+
+# ============================================================
+
+
+
+with open(
+
+    report_path,
+
+    "w",
+
+    encoding="utf-8"
+
+) as f:
+
+
+
+    f.write(
+
+        report
+
+    )
+
+
+
+print(
+
+    "\nFinal Experiment 06 report saved to:"
+
+)
+
+
+
+print(
+
+    report_path
+
+)
+
+
+
+print(
+
+    "\nExperiment 06 final report generated successfully."
+
+)
+
+================ CELL 13 ================

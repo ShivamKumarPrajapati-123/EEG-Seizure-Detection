@@ -1,0 +1,75 @@
+
+CHB01 → CHB02 CROSS-PATIENT EEG SEIZURE DETECTION
+================================================
+
+Test patient:
+CHB02
+
+Evaluation setup:
+- Model trained on CHB01
+- CHB02 used as an unseen test patient
+- Decision threshold: 0.05
+- Threshold selected using CHB01 internal validation
+- Window duration: 4 seconds
+
+WINDOW-LEVEL RESULTS
+--------------------
+Test windows: 6539
+Actual seizure windows: 45
+Predicted seizure windows: 385
+
+True positives: 30
+False positives: 355
+True negatives: 6139
+False negatives: 15
+
+Accuracy: 0.9434
+Sensitivity: 0.6667
+Specificity: 0.9453
+Precision: 0.0779
+F1-score: 0.1395
+ROC-AUC: 0.9308
+
+EVENT-LEVEL RESULTS
+-------------------
+Actual annotated seizures: 3
+Detected annotated seizures: 3
+Missed annotated seizures: 0
+
+Predicted seizure events: 201
+False-positive events: 195
+False-positive events/hour: 37.03
+
+SEIZURE COVERAGE
+----------------
+Total annotated seizure duration: 172 seconds
+Total covered seizure duration: 114 seconds
+Total missed seizure duration: 58 seconds
+
+Simple average seizure coverage: 76.24%
+Time-weighted seizure coverage: 66.28%
+
+TEMPORAL DETECTION
+------------------
+Average detection delay: 3.33 seconds
+Total missed seizure gaps: 5
+
+INTERPRETATION
+--------------
+The CHB01-trained model demonstrated strong ranking discrimination
+on the unseen CHB02 patient, with ROC-AUC of 0.9308.
+
+At the CHB01-selected threshold of 0.05, the model detected all
+3 annotated CHB02 seizure events and covered 66.28% of the total
+annotated seizure duration.
+
+However, the detector produced a substantial false-positive burden,
+with 195 non-overlapping predicted events and approximately
+37.03 false-positive events per hour.
+
+Therefore, the results demonstrate cross-patient seizure-event
+detection capability, but also indicate limited precision and a
+substantial false-alarm burden.
+
+This experiment is research/experimental evaluation and should
+not be interpreted as clinical validation.

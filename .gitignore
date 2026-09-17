@@ -5,6 +5,7 @@
 # Python
 __pycache__/
 *.pyc
+*.pyo
 
 # Models
 *.joblib
@@ -13,11 +14,16 @@ __pycache__/
 .DS_Store
 Thumb.db
 
-# Large dataset (keep locally, don't upload)
+# Raw EEG datasets
 data/chb01/
+data/multi_patient/
 
-# Generated windows
+# Large/generated EEG data
 data/windows.npy
+data/**/*.npy
+data/**/*.edf
+
+# Temporary uploaded files
 temp_uploaded.edf
 
 # Local backup files

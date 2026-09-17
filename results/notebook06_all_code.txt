@@ -1,0 +1,288 @@
+import numpy as np
+
+import pandas as pd
+
+from scipy.signal import welch
+
+
+
+# Load rebuilt dataset
+
+windows = np.load("../data/windows.npy")
+
+labels = np.load("../data/labels.npy")
+
+
+
+print("Windows Shape:", windows.shape)
+
+print("Labels Shape:", labels.shape)
+# Frequency bands
+
+frequency_bands = {
+
+    "Delta": (0.5, 4),
+
+    "Theta": (4, 8),
+
+    "Alpha": (8, 13),
+
+    "Beta": (13, 30),
+
+    "Gamma": (30, 40)
+
+}
+
+
+
+sfreq = 256
+
+
+
+print("Sampling Frequency:", sfreq, "Hz")
+
+print("Frequency Bands:", frequency_bands)
+def extract_statistical_features(window):
+
+    
+
+    # Calculate features for each EEG channel
+
+    channel_means = np.mean(window, axis=1)
+
+    channel_stds = np.std(window, axis=1)
+
+    channel_variances = np.var(window, axis=1)
+
+
+
+    # Average across all EEG channels
+
+    mean_feature = np.mean(channel_means)
+
+    std_feature = np.mean(channel_stds)
+
+    variance_feature = np.mean(channel_variances)
+
+
+
+    return mean_feature, std_feature, variance_feature
+def extract_frequency_features(window, sfreq=256):
+
+
+
+    channel_features = []
+
+
+
+    for channel in window:
+
+
+
+        # Calculate Power Spectral Density using Welch method
+
+        frequencies, psd = welch(
+
+            channel,
+
+            fs=sfreq,
+
+            nperseg=512
+
+        )
+
+
+
+        band_features = {}
+
+
+
+        # Calculate power for each frequency band
+
+        for band_name, (low_freq, high_freq) in frequency_bands.items():
+
+
+
+            frequency_mask = (
+
+                (frequencies >= low_freq) &
+
+                (frequencies < high_freq)
+
+            )
+
+
+
+            band_power = np.trapezoid(
+
+                psd[frequency_mask],
+
+                frequencies[frequency_mask]
+
+            )
+
+
+
+            band_features[band_name] = band_power
+
+
+
+        channel_features.append(band_features)
+
+
+
+    # Convert channel features to DataFrame
+
+    channel_features_df = pd.DataFrame(channel_features)
+
+
+
+    # Average features across all 23 EEG channels
+
+    window_frequency_features = channel_features_df.mean()
+
+
+
+    return window_frequency_features
+# Test feature extraction on the first EEG window
+
+
+
+test_features = extract_statistical_features(windows[0])
+
+frequency_features = extract_frequency_features(windows[0], sfreq)
+
+
+
+print("Statistical Features:")
+
+print("Mean:", test_features[0])
+
+print("Std:", test_features[1])
+
+print("Variance:", test_features[2])
+
+
+
+print("\nFrequency Features:")
+
+print(frequency_features)
+# Extract features from all EEG windows
+
+
+
+all_features = []
+
+
+
+for i, window in enumerate(windows):
+
+
+
+    features_for_window = [
+
+        *extract_statistical_features(window),
+
+        *extract_frequency_features(window, sfreq).values
+
+    ]
+
+
+
+    all_features.append(features_for_window)
+
+
+
+    if (i + 1) % 500 == 0:
+
+        print(f"Processed {i + 1}/{len(windows)} windows")
+
+
+
+# Convert to NumPy array
+
+features = np.array(all_features)
+
+
+
+print("\nFeature Extraction Completed!")
+
+print("Feature Matrix Shape:", features.shape)
+# Create feature names
+
+
+
+feature_names = [
+
+    "Mean",
+
+    "Std",
+
+    "Variance",
+
+    "Delta",
+
+    "Theta",
+
+    "Alpha",
+
+    "Beta",
+
+    "Gamma"
+
+]
+
+
+
+# Create DataFrame
+
+features_df = pd.DataFrame(
+
+    features,
+
+    columns=feature_names
+
+)
+
+
+
+# Add labels
+
+features_df["Label"] = labels
+
+
+
+# Display basic information
+
+print("Final Dataset Shape:", features_df.shape)
+
+
+
+print("\nFeature Columns:")
+
+print(feature_names)
+
+
+
+print("\nClass Distribution:")
+
+print(features_df["Label"].value_counts().sort_index())
+
+
+
+print("\nFirst 5 Rows:")
+
+display(features_df.head())
+# Check for missing values
+
+
+
+print("Missing Values in Each Column:")
+
+print(features_df.isnull().sum())
+
+
+
+print("\nTotal Missing Values:")
+
+print(features_df.isnull().sum().sum())

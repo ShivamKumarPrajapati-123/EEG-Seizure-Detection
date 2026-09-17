@@ -1,0 +1,535 @@
+import os
+
+import numpy as np
+
+import mne
+
+
+
+# Function to read EDF file
+
+def read_edf(file_path):
+
+    raw = mne.io.read_raw_edf(
+
+        file_path,
+
+        preload=True,
+
+        verbose=False
+
+    )
+
+    return raw
+
+
+
+
+
+# Function to preprocess EEG signal
+
+def preprocess_signal(raw):
+
+    raw = raw.copy()
+
+
+
+    raw.filter(
+
+        l_freq=0.5,
+
+        h_freq=40,
+
+        verbose=False
+
+    )
+
+
+
+    return raw
+data_folder = "../data/chb01"
+
+
+
+edf_files = sorted([
+
+    file for file in os.listdir(data_folder)
+
+    if file.endswith(".edf")
+
+])
+
+
+
+print("Total EDF Files:", len(edf_files))
+
+print("\nEDF Files:")
+
+
+
+for file in edf_files:
+
+    print(file)
+# Seizure annotations for CHB01 EDF recordings
+
+# Format:
+
+# "filename.edf": [(seizure_start_seconds, seizure_end_seconds)]
+
+
+
+seizure_annotations = {
+
+    "chb01_03.edf": [(2996, 3036)],
+
+    "chb01_04.edf": [(1467, 1494)],
+
+    "chb01_15.edf": [(1732, 1772)],
+
+    "chb01_16.edf": [(1015, 1066)],
+
+    "chb01_18.edf": [(1720, 1810)],
+
+    "chb01_21.edf": [(327, 420)],
+
+    "chb01_26.edf": [(1862, 1963)],
+
+}
+
+
+
+print("Seizure-containing EDF files:")
+
+for file, intervals in seizure_annotations.items():
+
+    print(f"{file}: {intervals}")
+
+
+
+print("\nTotal seizure-containing files:", len(seizure_annotations))
+def read_edf(file_path):
+
+    raw = mne.io.read_raw_edf(
+
+        file_path,
+
+        preload=True,
+
+        verbose=False
+
+    )
+
+    return raw
+# Create 4-second EEG windows and assign correct seizure labels
+
+# for every EDF file
+
+
+
+WINDOW_SIZE = 4  # seconds
+
+
+
+all_windows = []
+
+all_labels = []
+
+metadata = []
+
+
+
+for file in edf_files:
+
+    print(f"\nProcessing: {file}")
+
+
+
+    file_path = os.path.join(data_folder, file)
+
+
+
+    # Read EDF
+
+    raw = read_edf(file_path)
+
+
+
+    # Preprocess EEG
+
+    processed_raw = preprocess_signal(raw)
+
+
+
+    # Get EEG data
+
+    data = processed_raw.get_data()
+
+
+
+    sfreq = processed_raw.info["sfreq"]
+
+    samples_per_window = int(WINDOW_SIZE * sfreq)
+
+
+
+    total_samples = data.shape[1]
+
+
+
+    # Get seizure intervals for this specific file
+
+    seizure_intervals = seizure_annotations.get(file, [])
+
+
+
+    file_windows = 0
+
+    file_seizures = 0
+
+
+
+    # Create windows
+
+    for start_sample in range(
+
+        0,
+
+        total_samples - samples_per_window + 1,
+
+        samples_per_window
+
+    ):
+
+        end_sample = start_sample + samples_per_window
+
+
+
+        # Convert sample positions to seconds
+
+        window_start = start_sample / sfreq
+
+        window_end = end_sample / sfreq
+
+
+
+        # Extract window
+
+        window = data[:, start_sample:end_sample]
+
+
+
+        # Default: normal
+
+        label = 0
+
+
+
+        # Check whether window overlaps a seizure interval
+
+        for seizure_start, seizure_end in seizure_intervals:
+
+
+
+            if (
+
+                window_start < seizure_end
+
+                and window_end > seizure_start
+
+            ):
+
+                label = 1
+
+                break
+
+
+
+        # Store window and label
+
+        all_windows.append(window)
+
+        all_labels.append(label)
+
+
+
+        metadata.append({
+
+            "file": file,
+
+            "window_start": window_start,
+
+            "window_end": window_end,
+
+            "label": label
+
+        })
+
+
+
+        file_windows += 1
+
+
+
+        if label == 1:
+
+            file_seizures += 1
+
+
+
+    print("Windows:", file_windows)
+
+    print("Seizure Windows:", file_seizures)
+
+
+
+# Convert to NumPy arrays
+
+all_windows = np.array(all_windows)
+
+all_labels = np.array(all_labels)
+
+
+
+# Convert metadata to DataFrame
+
+metadata_df = pd.DataFrame(metadata)
+
+
+
+print("\n==============================")
+
+print("FINAL DATASET SUMMARY")
+
+print("==============================")
+
+
+
+print("Total Windows:", len(all_windows))
+
+print("Window Shape:", all_windows.shape)
+
+
+
+print("Normal Windows:", np.sum(all_labels == 0))
+
+print("Seizure Windows:", np.sum(all_labels == 1))
+
+
+
+print("\nLabels Shape:", all_labels.shape)
+
+
+
+print("\nSeizure Windows by File:")
+
+print(
+
+    metadata_df[metadata_df["label"] == 1]["file"]
+
+    .value_counts()
+
+)
+# Save the newly generated dataset
+
+
+
+# Create data directory if it does not exist
+
+os.makedirs("../data", exist_ok=True)
+
+
+
+# Save EEG windows
+
+np.save("../data/windows.npy", all_windows)
+
+
+
+# Save labels
+
+np.save("../data/labels.npy", all_labels)
+
+
+
+# Save metadata
+
+metadata_df.to_csv(
+
+    "../data/window_metadata.csv",
+
+    index=False
+
+)
+
+
+
+print("Dataset saved successfully!")
+
+print("Windows:", all_windows.shape)
+
+print("Labels:", all_labels.shape)
+
+print("Metadata:", metadata_df.shape)
+# Verify saved dataset files
+
+
+
+windows = np.load("../data/windows.npy")
+
+labels = np.load("../data/labels.npy")
+
+metadata = pd.read_csv("../data/window_metadata.csv")
+
+
+
+print("Windows shape:", windows.shape)
+
+print("Labels shape:", labels.shape)
+
+print("Metadata shape:", metadata.shape)
+
+
+
+print("\nNormal Windows:", np.sum(labels == 0))
+
+print("Seizure Windows:", np.sum(labels == 1))
+
+
+
+print("\nMetadata columns:")
+
+print(metadata.columns.tolist())
+
+
+
+print("\nFirst 5 metadata rows:")
+
+print(metadata.head())
+import numpy as np
+
+import pandas as pd
+
+
+
+# Load the saved feature and label files
+
+features = np.load("../data/features.npy")
+
+labels = np.load("../data/labels.npy")
+
+
+
+# Feature names
+
+feature_names = [
+
+    "Mean",
+
+    "Std",
+
+    "Variance",
+
+    "Delta",
+
+    "Theta",
+
+    "Alpha",
+
+    "Beta",
+
+    "Gamma"
+
+]
+
+
+
+# Create DataFrame
+
+features_df = pd.DataFrame(
+
+    features,
+
+    columns=feature_names
+
+)
+
+
+
+# Add labels
+
+features_df["Label"] = labels
+
+
+
+print("Features Shape:", features.shape)
+
+print("Labels Shape:", labels.shape)
+
+print("Final Dataset Shape:", features_df.shape)
+print("Missing Values in Each Column:")
+
+print(features_df.isnull().sum())
+
+
+
+print("\nTotal Missing Values:")
+
+print(features_df.isnull().sum().sum())
+# Save final feature dataset
+
+
+
+features_df.to_csv(
+
+    "../data/features.csv",
+
+    index=False
+
+)
+
+
+
+np.save(
+
+    "../data/features.npy",
+
+    features
+
+)
+
+
+
+np.save(
+
+    "../data/labels.npy",
+
+    labels
+
+)
+
+
+
+print("Feature dataset saved successfully!")
+
+
+
+print("\nSaved files:")
+
+print("1. ../data/features.csv")
+
+print("2. ../data/features.npy")
+
+print("3. ../data/labels.npy")
+# Verify saved files
+
+
+
+import os
+
+
+
+print("features.csv exists:", os.path.exists("../data/features.csv"))
+
+print("features.npy exists:", os.path.exists("../data/features.npy"))
+
+print("labels.npy exists:", os.path.exists("../data/labels.npy"))

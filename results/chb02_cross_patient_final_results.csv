@@ -1,0 +1,26 @@
+Metric,Value
+Test patient,CHB02
+Test windows,6539
+Actual seizure windows,45
+Predicted seizure windows,385
+True positives,30
+False positives,355
+True negatives,6139
+False negatives,15
+Accuracy,0.9434164245297446
+Sensitivity,0.6666666666666666
+Specificity,0.9453341546042501
+Precision,0.07792207792207792
+F1-score,0.13953488372093023
+ROC-AUC,0.9308
+Predicted seizure events,201
+False-positive events,195
+False-positive events/hour,37.033129352184005
+Actual seizures,3
+Detected actual seizures,3
+Missed actual seizures,0
+Average seizure coverage,0.7624209575429087
+Time-weighted seizure coverage,0.6627906976744186
+Total covered seizure seconds,114.0
+Total missed seizure seconds,58.0
+Average detection delay (seconds),3.3333333333333335

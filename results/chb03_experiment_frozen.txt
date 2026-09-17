@@ -1,0 +1,17 @@
+CHB03 EXPERIMENT FROZEN
+
+CHB01 -> CHB03 CROSS-PATIENT EXPERIMENT
+
+STATUS: COMPLETE AND FROZEN
+
+Training patient: CHB01
+Test patient: CHB03
+
+Threshold: 0.05
+Threshold selected from: CHB01 internal validation
+
+CHB03 used for: final evaluation only
+
+No further model or threshold tuning should be performed on CHB03.
+
+Frozen at: 2026-09-18T00:10:38

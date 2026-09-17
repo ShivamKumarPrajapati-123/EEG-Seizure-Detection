@@ -1,130 +1,159 @@
-# 🧠 EEG-Based Epileptic Seizure Detection Using Signal Processing and Machine Learning
+🧠 EEG-Based Epileptic Seizure Detection Using Signal Processing and Machine Learning
 
-**Author:** Shivam Prajapati  
-**Program:** Computer Science Engineering — Artificial Intelligence & Machine Learning
+Author: Shivam Prajapati
+Program: Computer Science Engineering --- Artificial Intelligence &
+Machine Learning
 
----
+1. Project Overview
 
-## 1. Project Overview
+Epileptic seizures are neurological events that can produce abnormal
+patterns in electroencephalography (EEG) signals. Automatic seizure
+detection from EEG recordings is an important application of biomedical
+signal processing and machine learning.
 
-Epileptic seizures are neurological events that can produce abnormal patterns in electroencephalography (EEG) signals. Automatic seizure detection from EEG recordings is an important application of biomedical signal processing and machine learning.
+This project presents an end-to-end research and learning pipeline for
+analyzing EEG recordings and detecting seizure-related activity using
+signal processing, feature engineering, and machine learning.
 
-This project presents an end-to-end research and learning pipeline for analyzing EEG recordings and detecting seizure-related activity using signal processing, feature engineering, and machine learning.
+The project uses the CHB-MIT Scalp EEG Database and processes EEG
+recordings stored in EDF (European Data Format) files.
 
-The project uses the **CHB-MIT Scalp EEG Database** and processes EEG recordings stored in EDF (European Data Format) files.
+The project covers:
 
-The overall pipeline includes:
+EEG data loading using MNE-Python
 
-- EEG data loading from EDF files
-- EEG signal preprocessing
-- Fixed-length EEG windowing
-- Seizure and non-seizure labeling
-- Statistical feature extraction
-- Frequency-domain feature extraction using Power Spectral Density (PSD)
-- Random Forest machine learning classification
-- Class-imbalance handling
-- Recording-wise evaluation
-- Classification threshold analysis
-- Recording-wise 5-fold cross-validation
-- Window-level seizure detection
-- Recording-level seizure detection
-- Seizure event-level evaluation
-- Temporal consecutive-window analysis
-- Integrated final evaluation
-- Streamlit-based interactive deployment
-- Final research interpretation and conclusion
+EEG metadata and signal inspection
 
-The project was developed as a **research and learning prototype** to gain practical experience in:
+Signal preprocessing
 
-- Biomedical signal processing
-- EEG data analysis
-- Feature engineering
-- Machine learning
-- Imbalanced classification
-- Model evaluation
-- Cross-validation
-- Event-level evaluation
-- Temporal post-processing
-- Reproducible research workflows
-- Machine learning application deployment
+Fixed-length EEG windowing
 
-> **Important:** This project is intended for educational and research purposes. It is **not a clinically validated medical diagnostic system** and must not be used for medical diagnosis or clinical decision-making.
+Seizure/non-seizure labeling
 
----
+Statistical feature extraction
 
-## 2. Objectives
+Frequency-domain feature extraction using Welch PSD
 
-The main objectives of this project are:
+Random Forest classification
 
-- Load EEG recordings from EDF files.
-- Understand EEG signal properties and metadata.
-- Preprocess EEG signals using frequency filtering.
-- Segment continuous EEG recordings into fixed-length windows.
-- Identify seizure and non-seizure EEG windows.
-- Extract statistical features from EEG signals.
-- Extract frequency-domain features using Power Spectral Density (PSD).
-- Construct a machine learning feature dataset.
-- Train a Random Forest classifier.
-- Address severe class imbalance using class-weighted learning.
-- Evaluate model performance using appropriate classification metrics.
-- Analyze the effect of classification threshold selection.
-- Evaluate generalization using recording-wise cross-validation.
-- Evaluate seizure detection at the event level.
-- Investigate temporal consecutive-window post-processing.
-- Generate reproducible evaluation results and visualizations.
-- Deploy the prediction pipeline as an interactive Streamlit application.
-- Identify limitations and future research directions.
+Class-imbalance handling
 
----
+Recording-wise evaluation
 
-## 3. Dataset
+Threshold analysis
 
-This project uses the **CHB-MIT Scalp EEG Database**, a publicly available EEG dataset containing long-term scalp EEG recordings from pediatric subjects with intractable seizures.
+Recording-wise cross-validation
 
-The EEG recordings are provided in **EDF (European Data Format)** files and are processed using the **MNE-Python** library.
+Event-level evaluation
 
-The project includes analysis of multiple EEG recordings from the CHB-MIT dataset.
+Temporal consecutive-window analysis
 
-The raw EDF recordings are not included in the GitHub repository because of their large file size. They should be obtained separately from the CHB-MIT Scalp EEG Database and supplied to the local processing pipeline.
+Cross-patient evaluation
 
-### Final Robustness Evaluation Dataset
+Reproducible research artifacts
 
-The final recording-wise cross-validation experiment used:
+Streamlit-based deployment
 
-| Parameter | Value |
-|---|---:|
-| Total EEG recordings | 15 |
-| Seizure-containing recordings | 6 |
-| Normal-only recordings | 9 |
-| Total EEG windows | 13,181 |
-| Normal windows | 13,080 |
-| Seizure windows | 101 |
-| Number of features | 8 |
+Important: This is an educational and research prototype. It is
+not a clinically validated medical diagnostic system and must not
+be used for medical diagnosis or clinical decision-making.
 
-The final robustness dataset is highly imbalanced, with seizure windows representing a small proportion of the total windows.
+2. Objectives
 
-This class imbalance is an important consideration when interpreting model performance.
+The main objectives are to:
 
----
+Load EEG recordings from EDF files.
 
-## 4. Complete System Workflow
+Understand EEG signal properties and metadata.
 
-The overall pipeline is:
+Preprocess EEG signals using frequency filtering.
 
-```text
+Segment continuous EEG recordings into fixed-length windows.
+
+Identify seizure and non-seizure EEG windows.
+
+Extract statistical and frequency-domain features.
+
+Construct a machine-learning feature dataset.
+
+Train a Random Forest classifier.
+
+Handle severe class imbalance using class-weighted learning.
+
+Evaluate performance using appropriate metrics.
+
+Investigate classification-threshold behavior.
+
+Evaluate generalization to unseen recordings.
+
+Evaluate seizure detection at the event level.
+
+Investigate temporal consecutive-window post-processing.
+
+Evaluate cross-patient generalization.
+
+Produce reproducible results, figures, and research artifacts.
+
+Deploy the prediction pipeline using Streamlit.
+
+3. Dataset
+
+This project uses the CHB-MIT Scalp EEG Database, a publicly
+available long-term scalp EEG dataset containing recordings from
+pediatric subjects with intractable seizures.
+
+The EEG recordings are provided as EDF files and are processed using
+MNE-Python.
+
+Raw EDF recordings are not included in this GitHub repository because of
+their size. They must be obtained separately from the CHB-MIT database.
+
+CHB01 robustness dataset
+
+The original recording-wise robustness experiments used 15 CHB01
+recordings:
+
+Parameter                          Value
+
+EEG recordings                        15
+Seizure-containing recordings          6
+Normal-only recordings                 9
+EEG windows                       13,181
+Normal windows                    13,080
+Seizure windows                      101
+Features                               8
+
+This dataset is severely imbalanced, so accuracy alone is not sufficient
+for interpretation.
+
+Multi-patient evaluation
+
+The later cross-patient experiments evaluated a model trained on
+CHB01 against two previously unseen patients:
+
+Training patient: CHB01
+Test patient 1:   CHB02
+Test patient 2:   CHB03
+
+The CHB02 and CHB03 experiments were kept separate from threshold
+tuning. The threshold used in both final cross-patient experiments was
+selected only from CHB01 internal validation.
+
+4. Complete System Workflow
+
 Raw EEG EDF Recordings
         │
         ▼
-EEG Data Loading using MNE
+EEG Loading using MNE
         │
         ▼
-EEG Metadata and Signal Inspection
+Metadata / Signal Inspection
         │
         ▼
-Signal Preprocessing
+Preprocessing
         │
         ▼
-4-Second EEG Windowing
+4-Second Windowing
         │
         ▼
 Seizure / Non-Seizure Labeling
@@ -132,149 +161,121 @@ Seizure / Non-Seizure Labeling
         ▼
 Feature Extraction
         │
-        ├──────────────────────────────┐
-        ▼                              ▼
-Statistical Features         Frequency-Domain Features
-        │                              │
-        └──────────────┬───────────────┘
-                       ▼
-             Machine Learning Dataset
-                       │
-                       ▼
-             Class-Weighted Random Forest
-                       │
-                       ▼
-            Probability-Based Predictions
-                       │
-                       ├──────────────────────────┐
-                       ▼                          ▼
-              Threshold Analysis        Recording-Wise
-                                         Cross-Validation
-                       │                          │
-                       └──────────────┬───────────┘
-                                      ▼
-                           Integrated Evaluation
-                                      │
-                       ┌──────────────┴──────────────┐
-                       ▼                             ▼
-                 Event-Level              Temporal Consecutive-
-                  Evaluation                Window Analysis
-                       │                             │
-                       └──────────────┬──────────────┘
-                                      ▼
-                           Final Research Conclusion
-                                      │
-                                      ▼
-                              Streamlit Deployment
-```
+        ├──────────────────────┐
+        ▼                      ▼
+Statistical Features    Welch PSD Features
+        │                      │
+        └───────────┬──────────┘
+                    ▼
+          Machine-Learning Dataset
+                    │
+                    ▼
+       Class-Weighted Random Forest
+                    │
+                    ▼
+          Probability Predictions
+                    │
+        ┌───────────┴──────────────┐
+        ▼                          ▼
+ Threshold / Validation     Cross-Patient Testing
+        │                    CHB01 → CHB02
+        │                    CHB01 → CHB03
+        ▼                          │
+ Event-Level Analysis              │
+        │                          │
+        ▼                          ▼
+Temporal Analysis           Final Frozen Results
+        │
+        ▼
+Research Interpretation
+        │
+        ▼
+Streamlit Deployment
 
----
+5. EEG Signal Preprocessing
 
-## 5. EEG Signal Preprocessing
+Raw EEG signals are loaded from EDF files using MNE-Python.
 
-The raw EEG signals are loaded from EDF files using MNE-Python.
+The current preprocessing pipeline uses a band-pass range of:
 
-A band-pass filter is applied to retain relevant EEG frequency components and reduce unwanted low-frequency drift and high-frequency noise.
+Parameter        Value
 
-The filtering range used in the current pipeline is:
+Low cutoff      0.5 Hz
+High cutoff      40 Hz
 
-| Parameter | Value |
-|---|---:|
-| Low Cutoff Frequency | 0.5 Hz |
-| High Cutoff Frequency | 40 Hz |
+The preprocessing stage reduces unwanted low-frequency drift and
+high-frequency components before windowing and feature extraction.
 
-The preprocessing stage prepares EEG signals for subsequent windowing and feature extraction.
+MNE may report duplicate channel names such as T8-P8; when this
+occurs, MNE automatically renames duplicate channels to maintain unique
+channel identifiers.
 
----
+6. EEG Windowing
 
-## 6. EEG Windowing
+The prediction pipeline uses non-overlapping fixed-length windows.
 
-The continuous EEG recording is divided into fixed-length windows.
+Parameter                  Value
 
-The prediction pipeline uses:
+Sampling frequency        256 Hz
+Window duration        4 seconds
+Samples per window         1,024
 
-| Parameter | Value |
-|---|---:|
-| Sampling Frequency | 256 Hz |
-| Window Duration | 4 seconds |
-| Samples per Window | 1024 |
+For a 23-channel recording, an individual window has the representation:
 
-For recordings containing 23 EEG channels, each window can be represented as:
+23 channels × 1024 samples
 
-```text
-23 EEG Channels × 1024 Samples
-```
+A 3,600-second recording sampled at 256 Hz contains:
 
-For example, a 3600-second recording sampled at 256 Hz produces:
+3,600 / 4 = 900 complete windows
 
-```text
-900 complete 4-second EEG windows
-```
+Each window is converted into a feature vector before machine-learning
+prediction.
 
-The fixed-length windows are treated as individual samples for feature extraction and machine-learning prediction.
+7. Seizure Labeling
 
----
+Each EEG window receives a binary label:
 
-## 7. Seizure Labeling
-
-During dataset construction, each EEG window was assigned a binary label:
-
-```text
 0 → Normal / Non-Seizure
 1 → Seizure
-```
 
-Seizure annotations associated with the EEG recordings were used to identify windows overlapping with seizure activity.
+Seizure annotations associated with the recordings are used to determine
+whether a window overlaps a seizure interval.
 
-The final robustness evaluation contained:
+The original CHB01 robustness dataset contained:
 
-```text
-Total Windows   = 13,181
-Normal Windows  = 13,080
-Seizure Windows = 101
-```
+13,181 total windows
+13,080 normal windows
+101 seizure windows
 
-This produced a severe class imbalance between normal and seizure samples.
+The strong class imbalance is an important consideration throughout
+model evaluation.
 
-> **Important:** Earlier experiments used smaller datasets and smaller test sets. Those experiments are retained as part of the project's experimental progression, while the final robustness evaluation is based on the larger 15-recording dataset described above.
-
-Because of the class imbalance, overall accuracy alone is not considered sufficient for evaluating seizure detection performance.
-
----
-
-## 8. Feature Extraction
-
-Features are extracted from each EEG window using statistical and frequency-domain analysis.
+8. Feature Extraction
 
 The final feature representation contains eight features.
 
-### 8.1 Statistical Features
+Statistical features
 
-The following statistical features are extracted:
+Mean
 
-- Mean
-- Standard Deviation
-- Variance
+Standard deviation
 
-These features provide statistical representations of EEG signal characteristics.
+Variance
 
-### 8.2 Frequency-Domain Features
+Frequency-domain features
 
-Power Spectral Density (PSD) is calculated using the Welch method.
+Power Spectral Density (PSD) is estimated using the Welch method.
 
-The following EEG frequency bands are analyzed:
+Band      Frequency range
 
-| Frequency Band | Frequency Range |
-|---|---:|
-| Delta | 0.5–4 Hz |
-| Theta | 4–8 Hz |
-| Alpha | 8–13 Hz |
-| Beta | 13–30 Hz |
-| Gamma | 30–40 Hz |
+Delta           0.5--4 Hz
+Theta             4--8 Hz
+Alpha            8--13 Hz
+Beta            13--30 Hz
+Gamma           30--40 Hz
 
-The final feature vector contains:
+The final feature vector is:
 
-```text
 Mean
 Std
 Variance
@@ -283,670 +284,503 @@ Theta
 Alpha
 Beta
 Gamma
-```
 
-These features combine statistical and spectral information from the EEG signal.
+The implementation extracts statistics from the window and computes
+channel-averaged Welch band-power features.
 
----
+9. Machine Learning Model
 
-## 9. Machine Learning Model
+The primary classifier is a Random Forest Classifier.
 
-A Random Forest Classifier is used as the primary machine-learning model.
+The final frozen cross-patient model uses:
 
-Random Forest was selected because it:
+RandomForestClassifier
+n_estimators = 200
+class_weight = "balanced"
 
-- Works effectively with tabular feature data.
-- Can model nonlinear relationships.
-- Does not require extensive feature scaling.
-- Provides feature importance information.
-- Is relatively straightforward to train and interpret.
-- Provides probability estimates that can be used for threshold analysis.
+The model provides class probabilities, allowing a probability threshold
+to be applied during seizure classification.
 
-The model uses class weighting to reduce the effect of severe class imbalance.
+Model artifacts
 
-The trained model is stored as:
+Two important model artifacts exist in the repository:
 
-```text
 models/random_forest_model.pkl
-```
+models/phase2_class_weighted_recording_wise.pkl
 
-The Random Forest implementation is considered a research baseline model and is not a clinically validated seizure detection model.
+The class-weighted recording-wise model is the model used for the
+final frozen CHB01 → CHB02/CHB03 cross-patient experiments.
 
----
+10. Evaluation Strategy
 
-## 10. Model Evaluation
+The project evaluates performance at several levels.
 
-The project evaluates model performance at multiple levels.
+Window-level evaluation
 
-### 10.1 Window-Level Evaluation
+Metrics include:
 
-Individual EEG windows are classified as:
+Accuracy
 
-- Normal / Non-Seizure
-- Seizure
+Precision
 
-The model is evaluated using:
+Sensitivity/Recall
 
-- Accuracy
-- Precision
-- Sensitivity (Recall)
-- Specificity
-- F1-Score
-- Balanced Accuracy
-- Confusion Matrix
-- Classification Report
+Specificity
 
-Because the dataset is severely imbalanced, accuracy alone is not considered sufficient.
+F1-score
 
-### 10.2 Recording-Level Evaluation
+Balanced accuracy
 
-Recording-wise evaluation is used to determine whether the model can detect seizure-related activity in EEG recordings that were not used for model training.
+Confusion matrix
 
-Recording-wise evaluation is more realistic than random window-level splitting because windows from the same EEG recording can be highly correlated.
+ROC-AUC
 
-### 10.3 Recording-Wise 5-Fold Cross-Validation
+Average Precision
 
-The final robustness evaluation used:
+Recording-wise evaluation
 
-| Parameter | Value |
-|---|---:|
-| Cross-validation method | StratifiedGroupKFold |
-| Number of folds | 5 |
-| Random state | 42 |
-| Grouping variable | EEG recording filename |
+Recordings are kept separate when evaluating generalization to unseen
+recordings.
 
-The grouping strategy ensures that windows from the same EEG recording are not simultaneously present in the training and testing sets within a fold.
+This reduces the risk of overly optimistic results caused by highly
+correlated windows from the same EEG recording appearing in both
+training and testing.
 
-The final experiment used:
+Event-level evaluation
 
-```text
-Total EEG recordings          = 15
-Seizure-containing recordings = 6
-Normal-only recordings        = 9
-Total EEG windows             = 13,181
-```
+Predictions are also grouped into seizure events to determine whether an
+actual seizure event was detected.
 
-Recording leakage checks confirmed that recordings were separated between training and testing within each fold.
+Temporal evaluation
 
-This provides a more realistic estimate of generalization to unseen EEG recordings than random window-level splitting.
+Consecutive positive windows are investigated as a simple temporal
+consistency strategy.
 
-However, because the dataset contains a limited number of patients, this evaluation does not establish generalization to completely unseen patients.
-
----
-
-## 11. Experimental Progression
+11. Experimental Progression
 
 The project was developed through multiple experimental stages.
 
-### Experiment 03 — Recording-Wise Holdout
+Experiment 03 --- Recording-Wise Holdout
 
-The recording-wise holdout evaluation established a stronger evaluation protocol than random window-level splitting.
+An early recording-wise holdout experiment evaluated the model at a
+threshold of 0.50.
 
-At the selected threshold of 0.50, the experiment achieved:
+Metric                Result
 
-| Metric | Result |
-|---|---:|
-| Accuracy | 98.73% |
-| Precision | 83.33% |
-| Sensitivity | 34.25% |
-| Specificity | 99.88% |
-| F1-Score | 48.54% |
-| Balanced Accuracy | 67.06% |
+Accuracy              98.73%
+Precision             83.33%
+Sensitivity           34.25%
+Specificity           99.88%
+F1-score              48.54%
+Balanced accuracy     67.06%
 
-This experiment demonstrated very high specificity but limited seizure sensitivity.
+This experiment demonstrated high specificity but limited seizure
+sensitivity.
 
-### Experiment 04 — Threshold Optimization
+Experiment 04 --- Exploratory Threshold Optimization
 
-Experiment 04 investigated the effect of changing the classification threshold.
+An exploratory threshold experiment investigated lower classification
+thresholds.
 
-The selected operating point was:
+A threshold of:
 
-```text
-Threshold = 0.10
-```
+0.10
 
-The recording-wise holdout result was:
+was selected in that experiment.
 
-| Metric | Result |
-|---|---:|
-| Accuracy | 98.97% |
-| Precision | 65.62% |
-| Sensitivity | 86.30% |
-| Specificity | 99.20% |
-| F1-Score | 74.56% |
-| Balanced Accuracy | 92.75% |
+Metric                Result
 
-The experiment demonstrated that lowering the threshold increased seizure sensitivity while increasing false-positive predictions.
+Accuracy              98.97%
+Precision             65.62%
+Sensitivity           86.30%
+Specificity           99.20%
+F1-score              74.56%
+Balanced accuracy     92.75%
 
-However, this threshold analysis was exploratory and was later subjected to a stronger recording-wise cross-validation evaluation.
+The experiment demonstrated the sensitivity/precision trade-off produced
+by changing the probability threshold.
 
-### Experiment 05 — Recording/Event-Level Holdout
+Experiment 05 --- Recording/Event-Level Holdout
 
-Experiment 05 evaluated the model at a recording/event level.
+A small recording/event-level evaluation produced:
 
-The evaluation produced:
+Metric           Result
 
-| Metric | Result |
-|---|---:|
-| Accuracy | 60.00% |
-| Precision | 60.00% |
-| Sensitivity | 100.00% |
-| Specificity | 0.00% |
-| F1-Score | 75.00% |
+Accuracy         60.00%
+Precision        60.00%
+Sensitivity     100.00%
+Specificity       0.00%
+F1-score         75.00%
 
-This experiment demonstrated the importance of evaluating seizure detection at a higher level than individual windows.
+Because the evaluation set was very small, these results are
+exploratory.
 
-However, the evaluation set was very small and produced a large number of false-positive recording detections.
+Experiment 06 --- Recording-Wise 5-Fold Cross-Validation
 
-Therefore, these results are considered exploratory and are not used as evidence of clinical generalization.
+The project then used recording-wise cross-validation with recording
+filename as the grouping variable.
 
-### Experiment 06 — Recording-Wise 5-Fold Cross-Validation
+The earlier robustness dataset contained:
 
-Experiment 06 provided the strongest robustness evaluation currently available in the project.
+15 recordings
+6 seizure-containing recordings
+9 normal-only recordings
+13,181 windows
 
-The evaluation used recording-wise 5-fold cross-validation, ensuring that recordings were separated between training and testing.
+This protocol provides a stronger evaluation of generalization to unseen
+recordings than random window-level splitting.
 
-Two probability thresholds were evaluated using out-of-fold predictions:
+However, this experiment does not by itself establish generalization to
+completely unseen patients.
 
-```text
-Threshold = 0.50
-Threshold = 0.10
-```
+12. Recording-Wise Cross-Validation Results
 
-The results are presented below.
+Two thresholds were examined using the cross-validation predictions.
 
----
+Threshold 0.50
 
-## 12. Final Cross-Validation Results
+Metric                Result
 
-### Threshold 0.50
+Accuracy              99.48%
+Precision             76.19%
+Sensitivity           47.52%
+Specificity           99.89%
+F1-score              58.54%
+Balanced accuracy     73.71%
 
-The conventional threshold of 0.50 produced:
+Pooled confusion matrix:
 
-| Metric | Result |
-|---|---:|
-| Accuracy | 99.48% |
-| Precision | 76.19% |
-| Sensitivity | 47.52% |
-| Specificity | 99.89% |
-| F1-Score | 58.54% |
-| Balanced Accuracy | 73.71% |
+TN = 13,065
+FP = 15
+FN = 53
+TP = 48
 
-#### Pooled Confusion Matrix
+Threshold 0.10
 
-```text
-True Negatives  = 13,065
-False Positives = 15
-False Negatives = 53
-True Positives  = 48
-```
+Metric                Result
 
-This operating point provides very high specificity and relatively high precision, but detects fewer seizure windows.
+Accuracy              99.27%
+Precision             51.75%
+Sensitivity           73.27%
+Specificity           99.47%
+F1-score              60.66%
+Balanced accuracy     86.37%
 
-### Threshold 0.10
+Pooled confusion matrix:
 
-The sensitivity-oriented threshold of 0.10 produced:
+TN = 13,011
+FP = 69
+FN = 27
+TP = 74
 
-| Metric | Result |
-|---|---:|
-| Accuracy | 99.27% |
-| Precision | 51.75% |
-| Sensitivity | 73.27% |
-| Specificity | 99.47% |
-| F1-Score | 60.66% |
-| Balanced Accuracy | 86.37% |
+The threshold comparison demonstrates a clear operating-point trade-off:
 
-#### Pooled Confusion Matrix
+Sensitivity:       47.52% → 73.27%
+Balanced accuracy: 73.71% → 86.37%
+Precision:         76.19% → 51.75%
 
-```text
-True Negatives  = 13,011
-False Positives = 69
-False Negatives = 27
-True Positives  = 74
-```
+The lower threshold increased seizure sensitivity while also increasing
+false-positive predictions.
 
-### Comparison
+13. Threshold Selection Limitation
 
-Compared with threshold 0.50:
+The threshold of 0.10 originated from the exploratory threshold
+analysis.
+
+For the later final cross-patient experiments, the operating threshold
+was not selected from CHB02 or CHB03.
+
+Instead:
+
+Threshold = 0.05
+
+was selected using CHB01 internal validation and then frozen.
+
+CHB02 and CHB03 were used only for final evaluation.
+
+This distinction is important because tuning the threshold directly on a
+test patient would introduce test-set leakage.
+
+A future nested validation design can provide an even more rigorous
+threshold-selection procedure.
 
-**Sensitivity**
+14. Final Frozen Cross-Patient Experiment
+
+The strongest patient-generalization experiment currently included in
+the repository is:
+
+Training patient → CHB01
+Test patient      → CHB02
+Test patient      → CHB03
+
+The frozen configuration is:
+
+Parameter                                  Value
+
+Training patient                           CHB01
+Test patients                       CHB02, CHB03
+Sampling frequency                        256 Hz
+Window duration                            4 sec
+Window size                        1,024 samples
+Features                                       8
+Model                     RandomForestClassifier
+Estimators                                   200
+Class weight                            balanced
+Threshold                                   0.05
+Threshold source       CHB01 internal validation
+CHB02 tuning                                  No
+CHB03 tuning                                  No
+Status                       Complete and frozen
+
+The frozen model was not retrained on CHB02 or CHB03.
+
+15. CHB02 Cross-Patient Results
 
-```text
-47.52% → 73.27%
-```
+CHB02 was evaluated using the frozen CHB01-trained model and threshold
+0.05.
+
+Metric                                CHB02
+
+Test windows                          6,539
+Actual seizure windows                   45
+Predicted seizure windows               385
+Accuracy                             94.34%
+Sensitivity                          66.67%
+Specificity                          94.53%
+Precision                             7.79%
+F1-score                             13.95%
+ROC-AUC                              93.08%
+Average Precision                    16.66%
+Actual seizure events                     3
+Detected seizure events                   3
+Missed seizure events                     0
+Time-weighted seizure coverage       66.28%
+Average detection delay            3.33 sec
+Predicted events                        201
+False-positive events                   195
+False-positive events/hour            37.03
+
+The ROC-AUC value is a threshold-independent ranking metric and should
+not be interpreted as 93.08% classification accuracy.
+
+The event-level analysis detected all three annotated seizure events in
+this evaluation, but the large number of false-positive events shows
+that event detection alone does not fully describe the system's
+behavior.
+
+16. CHB03 Cross-Patient Results
+
+CHB03 was evaluated using the same frozen CHB01-trained model and
+threshold 0.05.
+
+Metric                                CHB03
+
+Test windows                         34,201
+Actual seizure windows                  106
+Predicted seizure windows               537
+Accuracy                             98.28%
+Sensitivity                          25.47%
+Specificity                          98.50%
+Precision                             5.03%
+F1-score                              8.40%
+ROC-AUC                              86.58%
+Average Precision                     4.35%
+Actual seizure events                     7
+Detected seizure events                   3
+Missed seizure events                     4
+Time-weighted seizure coverage       26.37%
+Average detection delay            9.67 sec
+Predicted events                        224
+False-positive events                   216
+False-positive events/hour             5.68
 
-Increase:
+Again, ROC-AUC should not be interpreted as accuracy.
 
-```text
-25.75 percentage points
-```
+The CHB03 results show lower seizure sensitivity and lower seizure
+coverage than CHB02 under the same frozen model and threshold.
 
-**Balanced Accuracy**
+17. CHB02 vs CHB03 Cross-Patient Comparison
 
-```text
-73.71% → 86.37%
-```
+Metric                            CHB02      CHB03
 
-Increase:
+Test windows                      6,539     34,201
+Actual seizure events                 3          7
+Detected events                       3          3
+Sensitivity                      66.67%     25.47%
+Specificity                      94.53%     98.50%
+Precision                         7.79%      5.03%
+F1-score                         13.95%      8.40%
+ROC-AUC                          93.08%     86.58%
+Average Precision                16.66%      4.35%
+Seizure coverage                 66.28%     26.37%
+Detection delay                3.33 sec   9.67 sec
+False-positive events/hour        37.03       5.68
 
-```text
-12.66 percentage points
-```
+The comparison demonstrates variability in cross-patient performance.
 
-However:
+The lower false-positive event rate observed for CHB03 occurred together
+with lower sensitivity, lower seizure coverage, and longer detection
+delay. Therefore, it should not be described as an overall performance
+improvement.
 
-**Precision**
+The relative differences are descriptive comparisons, not statistical
+significance tests.
 
-```text
-76.19% → 51.75%
-```
+18. Observed Inter-Patient Feature Differences
 
-Decrease:
+Feature distributions were also examined across patients.
 
-```text
-24.44 percentage points
-```
+Examples of observed univariate separability in the analysis include:
 
-The number of false-positive predictions increased from:
-
-```text
-15 → 69
-```
-
-while false-negative predictions decreased from:
-
-```text
-53 → 27
-```
-
-### Interpretation
-
-The results demonstrate an important sensitivity-specificity trade-off.
-
-The threshold of 0.50 provides a more conservative operating point with higher precision and specificity.
-
-The threshold of 0.10 provides a more sensitivity-oriented operating point and detects more seizure windows, but at the cost of additional false-positive predictions.
-
-For a seizure-detection research prototype, threshold 0.10 may be preferable when missing a seizure is considered more costly than generating additional false-positive predictions.
-
-However, the appropriate operating threshold depends on the intended application and should be selected using a rigorous validation strategy.
-
----
-
-## 13. Threshold Optimization Limitation
-
-The threshold of 0.10 was originally identified during the exploratory threshold analysis in Experiment 04.
-
-It was subsequently evaluated using out-of-fold predictions generated during the recording-wise cross-validation experiment.
-
-Therefore, the threshold comparison provides useful evidence about the behavior of the model on unseen recordings, but it should not be interpreted as a fully nested threshold-optimization experiment.
-
-A more rigorous evaluation should:
-
-1. Split recordings into training and validation/test sets.
-2. Select the optimal threshold using only the training/validation portion.
-3. Keep the final test recordings completely untouched.
-4. Evaluate the selected threshold only on the held-out test recordings.
-5. Repeat the process within each cross-validation fold if cross-validation is used.
-
-This nested threshold-selection strategy is an important direction for future work.
-
----
-
-## 14. Event-Level Seizure Detection
-
-The final integrated evaluation also examined seizure detection at the event level.
-
-Using the sensitivity-oriented threshold:
-
-```text
-Threshold = 0.10
-```
-
-the evaluation included:
-
-```text
-Seizure-containing recordings = 3
-Detected seizure events        = 3
-Missed seizure events          = 0
-Event-level sensitivity        = 100.00%
-```
-
-### Interpretation
-
-The model successfully detected the seizure event in all three seizure-containing recordings included in this evaluation.
-
-However, this result must be interpreted carefully.
-
-The event-level evaluation was performed on a small evaluation set containing only:
-
-```text
-3 seizure-containing recordings
-2 normal-only recordings
-```
-
-Therefore, the observed 100% event-level sensitivity is considered exploratory and should not be interpreted as evidence of clinical generalization.
-
-A larger multi-patient event-level evaluation is required to establish reliable seizure-event detection performance.
-
----
-
-## 15. Temporal Consecutive-Window Analysis
-
-A temporal post-processing strategy was evaluated by requiring multiple consecutive positive EEG windows before declaring a recording-level seizure detection.
-
-Each window represents:
-
-```text
-4 seconds
-```
-
-The results were:
-
-| Consecutive Positive Windows | Time Requirement | Accuracy | Precision | Sensitivity | Specificity | F1-Score |
-|---|---:|---:|---:|---:|---:|---:|
-| 1 | 4 sec | 60% | 60% | 100% | 0% | 75% |
-| 2 | 8 sec | 80% | 75% | 100% | 50% | 85.71% |
-| 3 | 12 sec | 80% | 75% | 100% | 50% | 85.71% |
-| 5 | 20 sec | 100% | 100% | 100% | 100% | 100% |
-
-The results suggest that requiring multiple consecutive positive windows can reduce false-positive recording detections while maintaining seizure-event sensitivity.
-
-At:
-
-```text
-1 consecutive positive window
-```
-
-the evaluation produced:
-
-```text
-Sensitivity = 100%
-Specificity = 0%
-```
-
-At:
-
-```text
-5 consecutive positive windows
-20 seconds
-```
-
-the evaluation produced:
-
-```text
-Sensitivity = 100%
-Specificity = 100%
-```
-
-### Important Limitation
-
-The temporal analysis was performed on a very small evaluation set containing only:
-
-```text
-3 seizure-containing recordings
-2 normal-only recordings
-```
-
-Therefore, the observed 100% sensitivity and 100% specificity at the 20-second configuration should be considered exploratory.
-
-These results should not be interpreted as evidence of clinical generalization.
-
-The analysis demonstrates the potential value of temporal consistency, but the strategy requires validation on a much larger multi-patient dataset.
-
----
-
-## 16. Final Integrated Evaluation
-
-The final integrated evaluation was performed in:
-
-```text
+CHB02
+
+Theta    ≈ 0.985
+Std      ≈ 0.958
+Alpha    ≈ 0.956
+Variance ≈ 0.945
+Delta    ≈ 0.934
+Beta     ≈ 0.831
+Gamma    ≈ 0.669
+Mean     ≈ 0.512
+
+CHB01
+
+Theta    ≈ 0.989
+Std      ≈ 0.984
+Variance ≈ 0.979
+Delta    ≈ 0.970
+Alpha    ≈ 0.904
+Beta     ≈ 0.853
+Gamma    ≈ 0.779
+Mean     ≈ 0.542 separability AUC
+
+Distribution and KS analyses also showed differences in several feature
+distributions between patients.
+
+These findings are described as observed inter-patient feature
+distribution differences. They do not establish a causal explanation
+for the change in model performance.
+
+19. Event-Level and Temporal Analysis
+
+Earlier integrated experiments investigated whether temporal consistency
+could reduce isolated false-positive predictions.
+
+The analysis examined configurations requiring multiple consecutive
+positive 4-second windows.
+
+Consecutive            Time   Accuracy   Precision   Sensitivity   Specificity         F1
+positive        requirement
+windows
+
+1                     4 sec        60%         60%          100%            0%        75%
+
+2                     8 sec        80%         75%          100%           50%     85.71%
+
+3                    12 sec        80%         75%          100%           50%     85.71%
+
+5                    20 sec       100%        100%          100%          100%       100%
+
+These results came from a small evaluation set containing three
+seizure-containing recordings and two normal-only recordings.
+
+Therefore, the apparent 100% sensitivity and 100% specificity at the
+20-second configuration are exploratory observations, not evidence
+of clinical performance.
+
+20. Research Artifacts
+
+The repository contains reproducible research outputs for the
+cross-patient experiments.
+
+Important result files include:
+
+results/chb02_cross_patient_final_results.csv
+results/chb03_cross_patient_final_results.csv
+results/chb01_cross_patient_master_results.csv
+results/chb01_cross_patient_research_summary.csv
+results/chb02_vs_chb03_performance_change.csv
+results/chb01_cross_patient_experiment_metadata.json
+results/chb02_experiment_frozen.txt
+results/chb03_experiment_frozen.txt
+
+Important figures include:
+
+images/chb01_to_chb02_roc_curve.png
+images/chb01_to_chb02_precision_recall_curve.png
+images/chb01_to_chb02_calibration_curve.png
+images/chb01_to_chb02_final_confusion_matrix.png
+images/chb01_to_chb03_roc_curve.png
+images/chb01_to_chb03_precision_recall_curve.png
+images/chb02_vs_chb03_performance_comparison.png
+images/chb02_vs_chb03_performance_comparison.svg
+images/chb02_vs_chb03_performance_change.svg
+images/chb01_cross_patient_research_summary.svg
+
+The final research package audit confirmed the required cross-patient
+artifacts are present.
+
+21. Notebook Organization
+
+The repository currently contains 22 notebooks:
+
+01_Reading_EEG.ipynb
+02_Understanding_EEG.ipynb
+03_Preprocessing.ipynb
+04_Windowing.ipynb
+05_Labeling.ipynb
+06_Feature_Extraction.ipynb
+07_Model_Training.ipynb
+08_Dataset_Builder.ipynb
+09_Model_Evaluation.ipynb
+10_Prediction.ipynb
+11_Recording_Wise_Evaluation.ipynb
+12_Seizure_Event_Level_Evaluation.ipynb
+13_Robustness_Cross_Validation.ipynb
 14_Final_Integrated_Evaluation.ipynb
-```
+15_Final_Temporal_Event_Evaluation.ipynb
+16_Threshold_Optimization.ipynb
+17_Leakage_Free_Final_Experiment.ipynb
+18_Final_Figures.ipynb
+19._Final_Technical_Audit.ipynb
+20_Multi_Patient_Dataset_Builder.ipynb
+21_CHB02_Cross_Patient_Test.ipynb
+22_CHB03_Cross_Patient_Test.ipynb
 
-The notebook consolidated:
+The notebooks document the progression from basic EEG inspection through
+preprocessing, feature extraction, modeling, robustness analysis,
+multi-patient evaluation, and final research auditing.
 
-- Recording-wise evaluation
-- Threshold optimization
-- Recording-wise 5-fold cross-validation
-- Cross-validation threshold comparison
-- Seizure event-level evaluation
-- Temporal consecutive-window analysis
-- Integrated experiment comparison
-- Consistency verification
-- Research interpretation
-- Final research conclusion
+22. Project Structure
 
-The final evaluation confirmed that the results were internally consistent with the previously generated Experiment 04, Experiment 05, and Experiment 06 outputs.
-
-The final integrated outputs include:
-
-```text
-results/final_integrated_research_conclusion.txt
-results/final_integrated_metrics.csv
-results/final_temporal_consecutive_window_results.csv
-results/final_event_level_summary.csv
-```
-
----
-
-## 17. Key Findings
-
-The main findings of the current project are:
-
-- The project successfully implements an end-to-end EEG seizure detection pipeline.
-- The baseline model demonstrated that high accuracy alone can be misleading under severe class imbalance.
-- Recording-wise evaluation provides a more realistic estimate of generalization to unseen EEG recordings than random window-level splitting.
-- Recording-wise 5-fold cross-validation provided the strongest robustness evidence currently available in the project.
-- The Random Forest model maintained very high specificity across unseen recordings.
-- Seizure sensitivity varied between cross-validation folds, indicating recording-to-recording variability.
-- Reducing the classification threshold from 0.50 to 0.10 increased pooled seizure sensitivity from 47.52% to 73.27%.
-- Balanced accuracy increased from 73.71% to 86.37%.
-- The sensitivity improvement was accompanied by a reduction in precision from 76.19% to 51.75%.
-- False-positive predictions increased when using the lower threshold.
-- Event-level analysis detected all three seizure events in the small evaluation set.
-- Temporal consecutive-window analysis suggested that requiring multiple positive windows may reduce false-positive recording detections.
-- The event-level and temporal results are exploratory because they were obtained from small evaluation sets.
-- The current evaluation does not establish patient-independent generalization.
-- The system remains a research and learning prototype rather than a clinically validated diagnostic system.
-
----
-
-## 18. Limitations
-
-### 18.1 Severe Class Imbalance
-
-The final robustness dataset contains:
-
-```text
-Normal Windows  = 13,080
-Seizure Windows = 101
-```
-
-The large difference between the two classes makes accuracy alone an inadequate measure of model performance.
-
-### 18.2 Limited Number of Recordings
-
-The final robustness evaluation uses:
-
-```text
-15 EEG recordings
-```
-
-Only:
-
-```text
-6 recordings contain seizure activity
-```
-
-This limits the statistical strength of the conclusions.
-
-### 18.3 Limited Patient Diversity
-
-Recording-wise cross-validation evaluates generalization to unseen recordings.
-
-However, the current evaluation does not establish generalization to completely unseen patients.
-
-Patient-independent evaluation using a larger multi-patient dataset is required.
-
-### 18.4 Recording-to-Recording Variability
-
-Seizure sensitivity varied across cross-validation folds.
-
-This indicates that EEG characteristics and seizure patterns can vary substantially between recordings.
-
-This variability may affect model performance when applied to new EEG recordings.
-
-### 18.5 Threshold Optimization Limitation
-
-The threshold of 0.10 was originally identified during Experiment 04 and later evaluated using Experiment 06 out-of-fold predictions.
-
-Therefore, the current evaluation is not a fully nested threshold-optimization framework.
-
-Future work should perform threshold selection independently within each training fold.
-
-### 18.6 Small Event-Level Evaluation Set
-
-The final event-level evaluation included only:
-
-```text
-3 seizure-containing recordings
-2 normal-only recordings
-```
-
-Therefore, the observed 100% event-level sensitivity should be considered exploratory.
-
-### 18.7 Small Temporal Evaluation Set
-
-The consecutive-window analysis was also performed on a small evaluation set.
-
-The observed 100% sensitivity and 100% specificity at the 20-second configuration may not generalize to larger datasets.
-
-### 18.8 Limited Feature Representation
-
-The current model uses a relatively small feature set consisting primarily of:
-
-- Statistical features
-- Frequency-band features
-
-More advanced time-frequency, nonlinear, and spatial EEG features may improve the representation of complex seizure patterns.
-
-### 18.9 Limited Model Complexity
-
-The primary model is a Random Forest classifier.
-
-More advanced approaches may provide improved performance but require careful validation to avoid overfitting.
-
-### 18.10 No Clinical Validation
-
-This project is an educational and research prototype.
-
-The model has not been clinically validated and should not be used for:
-
-- Medical diagnosis
-- Treatment decisions
-- Clinical decision-making
-
----
-
-## 19. Future Work
-
-Future improvements may include:
-
-- Using a larger number of EEG recordings.
-- Including data from multiple patients.
-- Performing patient-independent evaluation.
-- Increasing the number of seizure samples.
-- Performing nested threshold optimization.
-- Selecting thresholds using dedicated validation sets.
-- Applying improved class imbalance handling techniques.
-- Investigating resampling strategies.
-- Evaluating Precision-Recall curves.
-- Evaluating ROC-AUC.
-- Testing Support Vector Machines (SVM).
-- Testing XGBoost and other ensemble methods.
-- Exploring 1D CNN-based EEG classification.
-- Exploring LSTM and other deep learning approaches.
-- Extracting additional time-domain features.
-- Extracting additional frequency-domain features.
-- Investigating time-frequency representations such as wavelets.
-- Exploring nonlinear EEG features.
-- Investigating channel-selection strategies.
-- Evaluating performance across multiple patients.
-- Evaluating performance across different seizure types.
-- Improving seizure detection sensitivity while controlling false-positive rates.
-- Investigating robust temporal post-processing strategies.
-- Performing larger-scale event-level evaluation.
-- Comparing patient-specific and patient-independent seizure detection models.
-- Validating the final system on an independent external dataset.
-
----
-
-## 20. Technologies Used
-
-The project uses:
-
-- Python
-- MNE-Python
-- NumPy
-- Pandas
-- SciPy
-- Matplotlib
-- Scikit-learn
-- Joblib
-- Streamlit
-- Jupyter Notebook
-
----
-
-## 21. Project Structure
-
-A representative project structure is:
-
-```text
 EEG-Seizure-Detection/
 │
 ├── data/
 │   ├── features.csv
 │   ├── features.npy
 │   ├── labels.npy
-│   └── README.md
+│   └── multi_patient/
+│       ├── chb02/
+│       └── chb03/
 │
 ├── images/
-│   ├── random_forest_baseline_confusion_matrix.png
-│   ├── random_forest_confusion_matrix.png
-│   └── random_forest_threshold_confusion_matrix.png
+│   ├── cross-patient evaluation figures
+│   ├── confusion matrices
+│   ├── ROC / PR curves
+│   └── SVG research tables and comparison figures
 │
 ├── models/
-│   └── random_forest_model.pkl
+│   ├── random_forest_model.pkl
+│   └── phase2_class_weighted_recording_wise.pkl
 │
 ├── notebooks/
-│   ├── 01_Reading_EEG.ipynb
-│   ├── 02_Understanding_EEG.ipynb
-│   ├── 03_Preprocessing.ipynb
-│   ├── 04_Windowing.ipynb
-│   ├── 05_Labeling.ipynb
-│   ├── 06_Feature_Extraction.ipynb
-│   ├── 07_Model_Training.ipynb
-│   ├── 08_Dataset_Builder.ipynb
-│   ├── 09_Model_Evaluation.ipynb
-│   ├── 10_Prediction.ipynb
-│   ├── 13_Robustness_Cross_Validation.ipynb
-│   └── 14_Final_Integrated_Evaluation.ipynb
+│   └── 22 research notebooks
 │
 ├── results/
-│   ├── confusion_matrix.png
-│   ├── feature_importance.png
-│   ├── final_evaluation.txt
-│   ├── threshold_analysis.png
-│   ├── experiment_04_threshold_comparison.csv
-│   ├── experiment_04_threshold_optimization.txt
-│   ├── experiment_comparison_summary.csv
-│   ├── experiment_06_cross_validation_report.txt
-│   ├── final_integrated_research_conclusion.txt
-│   ├── final_integrated_metrics.csv
-│   ├── final_temporal_consecutive_window_results.csv
-│   └── final_event_level_summary.csv
+│   ├── cross-patient result CSV files
+│   ├── experiment metadata
+│   ├── frozen experiment markers
+│   └── research summaries
 │
 ├── src/
 │   ├── __init__.py
@@ -958,218 +792,354 @@ EEG-Seizure-Detection/
 ├── .gitignore
 ├── README.md
 └── requirements.txt
-```
 
-Raw EDF recordings and temporary uploaded files are excluded from version control.
+Raw EDF recordings are excluded from version control.
 
-The exact contents of the repository may evolve as additional experiments and result artifacts are added.
+23. Technologies Used
 
----
+Python
 
-## 22. Installation
+MNE-Python
 
-### Clone the Repository
+NumPy
 
-```bash
+Pandas
+
+SciPy
+
+Matplotlib
+
+Scikit-learn
+
+Joblib
+
+Streamlit
+
+Jupyter Notebook
+
+24. Installation
+
+Clone the repository
+
 git clone https://github.com/ShivamKumarPrajapati-123/EEG-Seizure-Detection.git
-```
-
-### Navigate to the Project Directory
-
-```bash
 cd EEG-Seizure-Detection
-```
 
-### Install Required Packages
+Install dependencies
 
-```bash
 pip install -r requirements.txt
-```
 
----
+25. Running the Project
 
-## 23. Running the Project Locally
+Run the Streamlit application
 
-### Run the Streamlit Application
-
-From the project root:
-
-```bash
 streamlit run app.py
-```
 
-The application will open in your browser.
+Notebook workflow
 
-### Run the Notebook Workflow
+The notebooks can be followed progressively:
 
-The notebooks demonstrate the individual stages of the project pipeline.
+Reading EEG
+    ↓
+Understanding EEG
+    ↓
+Preprocessing
+    ↓
+Windowing
+    ↓
+Labeling
+    ↓
+Feature Extraction
+    ↓
+Model Training
+    ↓
+Dataset Construction
+    ↓
+Model Evaluation
+    ↓
+Prediction
+    ↓
+Recording-Wise Evaluation
+    ↓
+Event-Level Evaluation
+    ↓
+Cross-Validation
+    ↓
+Threshold Analysis
+    ↓
+Leakage-Free / Final Experiments
+    ↓
+Multi-Patient Dataset Construction
+    ↓
+CHB02 Cross-Patient Test
+    ↓
+CHB03 Cross-Patient Test
 
-The general workflow is:
+26. Reproducibility
 
-```text
-01_Reading_EEG
-        ↓
-02_Understanding_EEG
-        ↓
-03_Preprocessing
-        ↓
-04_Windowing
-        ↓
-05_Labeling
-        ↓
-06_Feature_Extraction
-        ↓
-08_Dataset_Builder
-        ↓
-07_Model_Training
-        ↓
-09_Model_Evaluation
-        ↓
-10_Prediction
-        ↓
-13_Robustness_Cross_Validation
-        ↓
-14_Final_Integrated_Evaluation
-```
+The project uses fixed random seeds where applicable.
 
-The later notebooks focus on robustness, cross-validation, integrated evaluation, event-level analysis, and final research interpretation.
+The final cross-patient experiment configuration is recorded in:
 
----
+results/chb01_cross_patient_experiment_metadata.json
 
-## 24. Reproducibility
+The experiment freeze markers record the final status for each
+cross-patient evaluation:
 
-The project uses fixed random seeds where applicable to improve reproducibility of machine-learning experiments.
+results/chb02_experiment_frozen.txt
+results/chb03_experiment_frozen.txt
 
-Important processed artifacts include:
+The final frozen configuration uses:
 
-```text
-data/features.csv
-data/features.npy
-data/labels.npy
-models/random_forest_model.pkl
-```
+Training patient = CHB01
+Threshold = 0.05
+Threshold source = CHB01 internal validation
+CHB02 = final evaluation only
+CHB03 = final evaluation only
 
-Final integrated evaluation outputs include:
+No CHB02 or CHB03 threshold tuning was used for the final reported
+cross-patient results.
 
-```text
-results/final_integrated_research_conclusion.txt
-results/final_integrated_metrics.csv
-results/final_temporal_consecutive_window_results.csv
-results/final_event_level_summary.csv
-```
+27. Key Findings
 
-Raw EEG recordings are not stored in the repository and must be obtained separately from the CHB-MIT Scalp EEG Database.
+The current experiments show that:
 
-For rigorous reproduction of the final results, the experiment notebooks and corresponding result files should be executed and reviewed in the documented experimental sequence.
+EEG seizure detection can be implemented as an end-to-end
+signal-processing and machine-learning pipeline.
 
----
+Severe class imbalance makes accuracy alone insufficient for
+interpreting seizure detection.
 
-## 25. Research Status
+Recording-wise evaluation provides a more realistic test of
+unseen-recording generalization than random window-level splitting.
 
-**Status:** Research and Development / Learning Prototype
+Threshold selection strongly affects sensitivity, precision, and
+false-positive behavior.
 
-The project demonstrates an end-to-end EEG seizure detection pipeline covering:
+The final frozen CHB01-trained model achieved measurable seizure
+detection performance on both CHB02 and CHB03.
 
-- EEG data loading
-- Signal preprocessing
-- Window segmentation
-- Seizure labeling
-- Feature extraction
-- Dataset construction
-- Machine-learning model training
-- Recording-wise evaluation
-- Threshold analysis
-- Recording-wise cross-validation
-- Event-level evaluation
-- Temporal consecutive-window analysis
-- Integrated research evaluation
-- Streamlit deployment
+Performance varied substantially between the two unseen patients.
 
-The final evaluation demonstrates that:
+CHB02 achieved 66.67% sensitivity and 66.28% time-weighted seizure
+coverage.
 
-- Recording-wise cross-validation provides stronger evidence of generalization to unseen EEG recordings than random window-level splitting.
-- Threshold selection significantly affects seizure sensitivity and false-positive behavior.
-- A lower threshold can improve sensitivity but reduce precision.
-- Temporal consistency may help reduce false-positive recording detections.
-- Patient-independent generalization remains unestablished.
+CHB03 achieved 25.47% sensitivity and 26.37% time-weighted seizure
+coverage.
 
-The current system should therefore be considered a research and learning prototype rather than a clinically validated seizure detection system.
+ROC-AUC values were higher than the corresponding precision-oriented
+metrics, illustrating why multiple evaluation metrics are necessary
+under severe class imbalance.
 
----
+Event-level detection and window-level detection can provide
+different views of system behavior.
 
-## 26. Final Research Conclusion
+Temporal consistency may help reduce isolated false-positive
+detections, but the available temporal evaluation set is too small
+for strong conclusions.
 
-This project developed and evaluated a machine-learning-based EEG seizure detection pipeline using the CHB-MIT Scalp EEG dataset.
+Observed feature-distribution differences between patients provide
+evidence of inter-patient variability in the current feature space.
 
-The complete pipeline included EEG signal preprocessing, window-based segmentation, seizure/non-seizure labeling, feature extraction, machine-learning classification, threshold optimization, recording-wise evaluation, seizure event-level evaluation, recording-wise cross-validation, and temporal consistency analysis.
+Patient-independent generalization has not yet been established.
 
-The initial experiments demonstrated that conventional accuracy alone is insufficient for assessing seizure detection performance because of the strong class imbalance between seizure and non-seizure EEG windows.
+28. Limitations
 
-The final recording-wise 5-fold cross-validation provided the strongest robustness evidence currently available in this project.
+Severe class imbalance
 
-At the default threshold of 0.50, the model achieved:
+The original CHB01 robustness dataset contains 13,080 normal windows and
+only 101 seizure windows.
 
-```text
-Accuracy          = 99.48%
-Precision         = 76.19%
-Sensitivity       = 47.52%
-Specificity       = 99.89%
-F1-Score          = 58.54%
-Balanced Accuracy = 73.71%
-```
+Limited number of patients
 
-At the sensitivity-oriented threshold of 0.10:
+The final cross-patient study uses CHB01 for training and CHB02/CHB03
+for testing. This is not sufficient to establish broad
+patient-independent generalization.
 
-```text
-Accuracy          = 99.27%
-Precision         = 51.75%
-Sensitivity       = 73.27%
-Specificity       = 99.47%
-F1-Score          = 60.66%
-Balanced Accuracy = 86.37%
-```
+Limited seizure-event sample
 
-The reduction in threshold increased seizure sensitivity by 25.75 percentage points and improved balanced accuracy by 12.66 percentage points.
+CHB02 contains three annotated seizure events and CHB03 contains seven
+annotated seizure events in the evaluated recordings. Event-level
+conclusions should therefore be interpreted cautiously.
 
-However, this improvement was accompanied by a reduction in precision and an increase in false-positive predictions.
+Low precision at the frozen threshold
 
-These results demonstrate an important sensitivity-specificity trade-off in EEG seizure detection.
+The final threshold of 0.05 increases sensitivity relative to more
+conservative operating points but produces substantial false-positive
+activity.
 
-The event-level analysis detected all three seizure events in the evaluated seizure-containing recordings. The temporal consecutive-window analysis further suggested that requiring multiple consecutive positive windows may reduce false-positive recording detections while maintaining seizure-event sensitivity.
+Threshold-selection limitation
 
-However, both event-level and temporal results were obtained from small evaluation sets and should therefore be considered exploratory.
+Although the final threshold was selected using CHB01 internal
+validation and not from CHB02/CHB03, a nested cross-validation procedure
+would provide a stronger estimate of threshold-selection robustness.
 
-The most important limitation of the current study is the limited patient diversity of the dataset. Although recording-wise cross-validation provides a stronger estimate of generalization to unseen recordings, it does not establish generalization to completely unseen patients.
+Limited feature representation
 
-Therefore, the current system should be considered a research and learning prototype rather than a clinically validated diagnostic tool.
+The current feature set contains basic statistical and Welch PSD
+features. More advanced time-frequency, nonlinear, spatial, and
+channel-aware representations could be investigated.
 
-Future work should include patient-independent validation using a larger multi-patient EEG dataset, rigorous nested threshold optimization, evaluation across different seizure types, improved handling of class imbalance, analysis of false-positive detections, optimization of temporal post-processing strategies, and comparison with more advanced machine-learning and deep-learning approaches.
+No clinical validation
 
-Overall, the project demonstrates the feasibility of developing an EEG-based seizure detection system and highlights the importance of recording-wise validation, threshold analysis, event-level evaluation, temporal consistency analysis, and appropriate performance metrics when assessing seizure detection systems.
+The system has not been validated in a clinical setting and should not
+be used for diagnosis or treatment decisions.
 
----
+29. Future Work
 
-## 27. Disclaimer
+Future research may include:
+
+Larger multi-patient evaluation.
+
+Patient-independent cross-validation.
+
+Nested threshold optimization.
+
+Larger independent test cohorts.
+
+Additional EEG channels and spatial features.
+
+Time-frequency representations such as wavelets.
+
+Nonlinear EEG features.
+
+More robust temporal post-processing.
+
+Improved false-positive suppression.
+
+Support Vector Machines.
+
+Gradient-boosting models.
+
+XGBoost.
+
+1D CNN architectures.
+
+LSTM and other sequence models.
+
+Transformer-based EEG models.
+
+Patient-specific versus patient-independent modeling comparisons.
+
+Seizure-type-specific analysis.
+
+External-dataset validation.
+
+Larger event-level evaluation.
+
+Statistical confidence intervals and significance analysis.
+
+More rigorous probability calibration assessment.
+
+30. Research Status
+
+Status: Research and Development / Learning Prototype
+
+The project has progressed from basic EEG exploration to a frozen
+multi-patient evaluation.
+
+The final cross-patient experiment is:
+
+CHB01 → CHB02
+CHB01 → CHB03
+
+with:
+
+4-second windows
+256 Hz sampling
+8 features
+Random Forest
+200 estimators
+class_weight="balanced"
+threshold=0.05
+
+The threshold was selected using CHB01 internal validation and frozen
+before evaluation on CHB02 and CHB03.
+
+The cross-patient experiments are complete and frozen.
+
+31. Final Research Conclusion
+
+This project developed and evaluated a machine-learning-based EEG
+seizure detection pipeline using the CHB-MIT Scalp EEG Database.
+
+The complete workflow includes EEG loading, signal preprocessing,
+windowing, seizure labeling, statistical and spectral feature
+extraction, Random Forest classification, class-imbalance handling,
+recording-wise evaluation, threshold analysis, event-level evaluation,
+temporal analysis, and cross-patient testing.
+
+The recording-wise experiments demonstrated that high accuracy can
+coexist with limited seizure sensitivity when seizure windows are rare.
+
+The final frozen cross-patient experiments provide a more demanding test
+by training on CHB01 and evaluating without retraining on CHB02 and
+CHB03.
+
+Using the frozen threshold of 0.05:
+
+CHB02:
+Sensitivity = 66.67%
+Specificity = 94.53%
+Precision   = 7.79%
+F1-score    = 13.95%
+ROC-AUC     = 93.08%
+Coverage    = 66.28%
+Delay       = 3.33 sec
+
+and:
+
+CHB03:
+Sensitivity = 25.47%
+Specificity = 98.50%
+Precision   = 5.03%
+F1-score    = 8.40%
+ROC-AUC     = 86.58%
+Coverage    = 26.37%
+Delay       = 9.67 sec
+
+These results demonstrate that performance can vary substantially when a
+model trained on one patient is applied to other patients.
+
+The lower false-positive event rate observed for CHB03 was accompanied
+by lower seizure sensitivity and coverage, so it should not be
+interpreted as an overall improvement.
+
+The experiments therefore highlight the importance of patient diversity,
+recording-wise validation, threshold discipline, event-level evaluation,
+temporal analysis, and multiple performance metrics in EEG
+seizure-detection research.
+
+The current system remains a research and learning prototype. The
+results do not establish clinical effectiveness or broad
+patient-independent generalization.
+
+Future work should focus on larger multi-patient cohorts, nested
+threshold selection, improved feature representations, robust temporal
+modeling, false-positive analysis, and independent external validation.
+
+32. Disclaimer
 
 This project is developed for educational and research purposes only.
 
-The current model is not a clinically validated medical device and should not be used for:
+The model is not a clinically validated medical device and must not
+be used for:
 
-- Medical diagnosis
-- Treatment decisions
-- Clinical decision-making
+Medical diagnosis
 
-The reported results are based on limited recordings and patients, and some event-level and temporal analyses were performed on small evaluation sets.
+Treatment decisions
 
-The reported performance should therefore not be interpreted as evidence of clinical effectiveness or patient-independent generalization.
+Clinical decision-making
 
----
+Reported results are based on a limited number of patients, recordings,
+and seizure events. They should not be interpreted as evidence of
+clinical effectiveness or broad patient-independent generalization.
 
-## 28. Author
+33. Author
 
-**Shivam Prajapati**
+Shivam Prajapati
 
-Computer Science Engineering — Artificial Intelligence & Machine Learning
+Computer Science Engineering --- Artificial Intelligence & Machine
+Learning
 
-**GitHub:**  
-https://github.com/ShivamKumarPrajapati-123
+GitHub:
+https://github.com/ShivamKumarPrajapati-123/EEG-Seizure-Detection
