@@ -12,11 +12,11 @@ from src.feature_extraction import extract_all_features
 MODEL_PATH = os.path.join(
     os.path.dirname(os.path.dirname(__file__)),
     "models",
-    "random_forest_final.pkl"
+    "phase2_class_weighted_recording_wise.pkl"
 )
 
-# Final threshold selected during model evaluation
-FINAL_THRESHOLD = 0.40
+# Final threshold selected during CHB01 internal validation
+FINAL_THRESHOLD = 0.05
 
 
 # --------------------------------------------------

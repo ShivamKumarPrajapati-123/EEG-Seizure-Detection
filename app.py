@@ -300,8 +300,15 @@ if uploaded_file is not None:
             # ==================================================
 
             with st.spinner(
-                "Preparing EEG signal..."
+                "Applying 0.5–40 Hz band-pass filtering..."
             ):
+
+                raw.filter(
+                    l_freq=0.5,
+                    h_freq=40.0,
+                    method="fir",
+                    verbose=False
+                )
 
                 eeg_data = raw.get_data()
 
