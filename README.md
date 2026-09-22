@@ -1,5 +1,7 @@
 🧠 EEG-Based Epileptic Seizure Detection Using Signal Processing and Machine Learning
 
+🚀 **Live Demo:** https://shivam-eeg-seizure-detector.streamlit.app
+
 Author: Shivam Prajapati
 Program: Computer Science Engineering --- Artificial Intelligence &
 Machine Learning
@@ -303,10 +305,10 @@ to be applied during seizure classification.
 
 Model artifacts
 
-Two important model artifacts exist in the repository:
+Two model artifacts are present in the repository:
 
-models/random_forest_model.pkl
-models/phase2_class_weighted_recording_wise.pkl
+- `models/random_forest_model.pkl` — earlier/baseline model artifact from the initial experiments.
+- `models/phase2_class_weighted_recording_wise.pkl` — final frozen class-weighted Random Forest model used for the CHB01 → CHB02/CHB03 cross-patient experiments.
 
 The class-weighted recording-wise model is the model used for the
 final frozen CHB01 → CHB02/CHB03 cross-patient experiments.
@@ -757,8 +759,7 @@ EEG-Seizure-Detection/
 │
 ├── data/
 │   ├── features.csv
-│   ├── features.npy
-│   ├── labels.npy
+│   ├── window_metadata.csv
 │   └── multi_patient/
 │       ├── chb02/
 │       └── chb03/
